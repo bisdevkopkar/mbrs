@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Management Visit</title>
+
+<style>
+
+.summary-box{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    align-items:center;
+    font-weight:bold;
+    color:#1565c0;
+}
+
+.button-group{
+    display:flex;
+    gap:10px;
+}    
+
+ .download-btn{
+    position:absolute;
+    top:10px;
+    right:60px;
+    z-index:1000;
+    background:#1565c0;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:bold;
+}   
+
+.modal{
+    display:none;
+    position:fixed;
+    z-index:999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+}
+
+.modal-content{
+    position:relative;
+    width:90%;
+    height:90%;
+    margin:2% auto;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.close{
+    position:absolute;
+    right:15px;
+    top:10px;
+    font-size:30px;
+    cursor:pointer;
+    z-index:1000;
+    color:red;
+    font-weight:bold;
+}
+
+#pdfFrame{
+    width:100%;
+    height:100%;
+    border:none;
+}    
+
+.table-container{
+    padding:15px;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#1565c0;
+    color:white;
+    padding:12px;
+    text-align:left;
+}
+
+td{
+    padding:8px 10px;
+}
+
+tbody tr{
+    transition:0.2s;
+}
+
+/* baris ganjil */
+tbody tr:nth-child(odd){
+    background:white;
+}
+
+/* baris genap */
+tbody tr:nth-child(even){
+    background:#eaf3ff;
+}
+
+/* hover */
+tbody tr:hover{
+    background:#d6e9ff;
+}
+
+th{
+    background:#1565c0;
+    color:white;
+    padding:10px;
+    text-align:left;
+    white-space:nowrap;
+}
+
+.lampiran-cell{
+    white-space:nowrap;
+}
+
+.pdf-icon{
+    cursor:pointer;
+    font-size:22px;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f0f2f5;
+}
+
+.header{
+    background:#1565c0;
+    color:white;
+    padding:15px;
+    font-size:24px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.toolbar{
+    background:white;
+    padding:10px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 2px 5px rgba(0,0,0,0.15);
+}
+
+button{
+    background:#1976d2;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#0d47a1;
+}
+
+.container{
+    padding:15px;
+}
+
+iframe{
+    width:100%;
+    height:500px;
+    border:none;
+    margin-top:10px;
+    border-radius:8px;
+}
+
+.loading{
+    text-align:center;
+    padding:20px;
+    font-size:18px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+    MANAGEMENT VISIT
+</div>
+
+<div class="toolbar">
+
+    <div class="summary-box">
+
+        <div>
+            Jumlah Periode Tilik :
+            <span id="totalPeriode">0</span>
+        </div>
+
+        <div>
+            Jumlah Temuan :
+            <span id="totalTemuan">0</span>
+        </div>
+
+        <div>
+            Jumlah Perbaikan :
+            <span id="totalPerbaikan">0</span>
+        </div>
+
+        <div>
+            Progres Perbaikan :
+            <span id="totalProgress">0%</span>
+        </div>
+
+    </div>
+
+    <div class="button-group">
+
+        <button onclick="openForm(
+        'https://forms.gle/nXBesBgprcaK9qdJ8'
+        )">
+            TILIK
+        </button>
+
+        <button onclick="openForm(
+        'https://forms.gle/d84NcKqXi6HD5JZ67'
+        )">
+            TINDAKAN
+        </button>
+
+        <button onclick="openForm(
+        'https://forms.gle/nkuT1DiWDMi2szmC6'
+        )">
+            VERIFIKASI
+        </button>
+
+    </div>
+
+</div>
+
+<div class="container">
+
+    <div id="loading" class="loading">
+        Loading data...
+    </div>
+
+<div class="table-container">
+
+<table>
+
+<thead>
+
+<tr>
+
+    <th>Tanggal Tilik</th>
+    <th>Kepala Unit</th>
+    <th>Jumlah Temuan</th>
+    <th>Tanggal Verifikasi</th>
+    <th>Nama Verifikator</th>
+    <th>Jumlah Perbaikan</th>
+    <th>Progres</th>
+    <th>Lampiran</th>
+
+</tr>
+
+    </thead>
+
+    <tbody id="listData"></tbody>
+
+</table>
+
+</div>
+</div>
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbyv1LEsDvqucQpW3aUXbxVMfknY30P4JUTWfE_izqz3wq6rNLASFv5tntqApmCpzSMg/exec";
+
+let allData = [];
+
+function openForm(url){
+    window.open(url, "_blank");
+}
+
+async function loadData(){
+
+    try{
+
+        const response = await fetch(API_URL);
+
+        allData = await response.json();
+
+        document.getElementById("loading").style.display = "none";
+
+        hitungSummary();
+
+        tampilData(); 
+
+    }catch(err){
+
+        document.getElementById("loading").innerHTML =
+            "Gagal load data";
+
+        console.log(err);
+
+    }
+
+}
+
+
+function hitungSummary(){
+
+    // jumlah periode unik berdasarkan tanggal
+    const uniqueTanggal =
+        [...new Set(allData.map(x => x.tanggal))];
+
+    const totalPeriode =
+        uniqueTanggal.length;
+
+    // total temuan
+    const totalTemuan =
+        allData
+        .filter(x => x.progres == "T")
+        .reduce((a,b) =>
+            a + (parseFloat(b.jumlah) || 0), 0);
+
+    // total perbaikan
+    const totalPerbaikan =
+        allData
+        .filter(x => x.progres == "P")
+        .reduce((a,b) =>
+            a + (parseFloat(b.jumlah) || 0), 0);
+
+    // progress %
+    let progress = 0;
+
+    if(totalTemuan > 0){
+
+        progress =
+            (
+                totalPerbaikan /
+                totalTemuan
+            ) * 100;
+    }
+
+    document.getElementById("totalPeriode")
+        .innerText = totalPeriode;
+
+    document.getElementById("totalTemuan")
+        .innerText = totalTemuan;
+
+    document.getElementById("totalPerbaikan")
+        .innerText = totalPerbaikan;
+
+    document.getElementById("totalProgress")
+        .innerText =
+            progress.toFixed(0) + "%";
+
+}
+
+function showPDF(fileId){
+
+    // LINK PREVIEW
+    const previewLink =
+        "https://drive.google.com/file/d/" +
+        fileId +
+        "/preview";
+
+    // LINK DOWNLOAD
+    const downloadLink =
+        "https://drive.google.com/uc?export=download&id=" +
+        fileId;
+
+    // tampilkan modal
+    document.getElementById("pdfModal")
+        .style.display = "block";
+
+    // tampilkan preview
+    document.getElementById("pdfFrame")
+        .src = previewLink;
+
+    // tombol download
+    document.getElementById("downloadBtn")
+        .onclick = function(){
+
+            window.open(downloadLink, "_blank");
+
+        };
+
+}
+
+function closePDF(){
+
+    document.getElementById("pdfModal")
+        .style.display = "none";
+
+    document.getElementById("pdfFrame")
+        .src = "";
+
+}
+
+function tampilData(){
+
+    const list =
+        document.getElementById("listData");
+
+    list.innerHTML = "";
+
+    // ambil data progres T
+    const dataT =
+        allData.filter(x => x.progres == "T");
+
+    if(dataT.length == 0){
+
+        list.innerHTML =
+            "<tr><td colspan='8'>Tidak ada data</td></tr>";
+
+        return;
+    }
+
+    dataT.forEach(t => {
+
+        // cari pasangan P
+        const p =
+            allData.find(x =>
+
+                x.progres == "P" &&
+
+                x.tanggal == t.tanggal &&
+
+                x.pimpinan == t.pimpinan
+
+            );
+
+        let jumlahT =
+            parseFloat(t.jumlah) || 0;
+
+        let jumlahP = 0;
+
+        let progres = "0%";
+
+        if(p){
+
+            jumlahP =
+                parseFloat(p.jumlah) || 0;
+
+            if(jumlahT > 0){
+
+                progres =
+                    (
+                        (jumlahP / jumlahT) * 100
+                    ).toFixed(0) + "%";
+            }
+
+        }
+
+        // PDF TEMUAN
+        let pdfT = t.link;
+
+        if(!pdfT || pdfT == ""){
+
+            pdfT =
+                "https://drive.google.com/file/d/" +
+                t.fileId +
+                "/preview";
+        }
+
+        // PDF PERBAIKAN
+        let pdfP = "";
+
+        if(p){
+
+            pdfP = p.link;
+
+            if(!pdfP || pdfP == ""){
+
+                pdfP =
+                    "https://drive.google.com/file/d/" +
+                    p.fileId +
+                    "/preview";
+            }
+
+        }
+
+        const tr =
+            document.createElement("tr");
+
+        tr.innerHTML = `
+
+            <td>${t.tanggal}</td>
+
+            <td>${t.pimpinan}</td>
+
+            <td align="center">
+                ${jumlahT}
+            </td>
+
+            <td>
+                ${p ? p.tanggalv : "-"}
+            </td>
+
+            <td>
+                ${p ? p.namav : "-"}
+            </td>
+
+            <td align="center">
+                ${jumlahP}
+            </td>
+
+            <td align="center">
+                ${progres}
+            </td>
+
+            <td class="lampiran-cell">
+
+                <!-- PDF TEMUAN -->
+                <span class="pdf-icon"
+                  title="Temuan"
+                 onclick="showPDF('${t.fileId}')">
+                  📄
+            </span>
+
+            <!-- PDF PERBAIKAN -->
+           ${p ? `
+               <span class="pdf-icon"
+                  title="Perbaikan"
+                  onclick="showPDF('${p.fileId}')">
+                 📄
+             </span>
+          ` : `
+            <span class="pdf-placeholder"></span>
+           `}
+
+           </td>
+        `;
+
+        list.appendChild(tr);
+
+    });
+
+}
+
+
+loadData();
+
+</script>
+
+<div id="pdfModal" class="modal">
+    <div class="modal-content">
+        <span class="close"
+              onclick="closePDF()">
+              &times;
+        </span>
+        <button id="downloadBtn"
+                class="download-btn">
+            Download PDF
+        </button>
+        <iframe id="pdfFrame"></iframe>
+    </div>
+</div>
+
+</body>
+</html>
