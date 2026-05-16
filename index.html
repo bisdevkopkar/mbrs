@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Management Visit</title>
+<title>Management Visit - Ver.1.2</title>
 
 <style>
 
@@ -200,25 +200,21 @@ iframe{
 
 .dashboard-content{
     position:relative;
-    width:92vw;
-    height:86vh;
+    width:96vw;
+    height:96vh;
     margin:1vh auto;
     background:white;
     border-radius:10px;
     padding:15px;
-    overflow:auto;
-}
-
-#barChart{
-    height:78% !important;
+    overflow:hidden;
 }
 
 .dashboard-grid{
     display:grid;
-    grid-template-columns:60% 40%;
-    gap:8px;
+    grid-template-columns:65% 35%;
+    gap:10px;
     width:100%;
-    height:calc(100% - 40px);
+    height:calc(100% - 20px);
 }
 
 .chart-box{
@@ -228,26 +224,17 @@ iframe{
     overflow:hidden;
 }
 
-.chart-box canvas{
-    max-height:100% !important;
-}
-
 .pie-container{
     display:grid;
-    grid-template-rows:40% auto 40%;
+    grid-template-rows:42% auto 42%;
     gap:5px;
     height:100%;
     align-items:center;
 }
 
-#pieOmzet,
-#pieEbitda{
-    max-height:300px !important;
-}
-
 .legend-box{
     text-align:center;
-    font-size:11px;
+    font-size:13px;
     font-weight:bold;
     color:#444;
 }
@@ -271,37 +258,9 @@ canvas{
     font-weight:bold;
 }
 
-.unit-dashboard-content{
-    position:relative;
-    width:92vw;
-    height:84vh;
-    margin:2vh auto;
-    background:white;
-    border-radius:10px;
-    padding:15px;
-    overflow:hidden;
-}
-
-.unit-dashboard-grid{
-    display:grid;
-    grid-template-columns:55% 45%;
-    gap:10px;
-    width:100%;
-    height:100%;
-}
-
-.icon-slot{
-    display:inline-block;
-    width:28px;
-    text-align:center;
-}
-
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-<script>
-</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -310,19 +269,49 @@ canvas{
 <body>
 
 <div class="header">
-    KEY PERFORMANCE INDICATOR REPORT
+    MANAGEMENT VISIT - Ver.1.2
 </div>
 
 <div class="toolbar">
-    <div class="periode-box">
-        <label>PERIODE :</label>
-        <select id="cmbTahun"
-                onchange="filterTahun()">
-        </select>
+    <div class="summary-box">
+        <div>
+            Jumlah Periode Tilik :
+            <span id="totalPeriode">0</span>
+        </div>
+        <div>
+            Jumlah Temuan :
+            <span id="totalTemuan">0</span>
+        </div>
+        <div>
+            Jumlah Perbaikan :
+            <span id="totalPerbaikan">0</span>
+        </div>
+        <div>
+            Progres Perbaikan :
+            <span id="totalProgress">0%</span>
+        </div>
     </div>
-    <button onclick="openDashboard()">
-        DASHBOARD
-    </button>
+
+    <div class="button-group">
+        <button onclick="openForm(
+        'https://forms.gle/nXBesBgprcaK9qdJ8'
+        )">
+            FORM TILIK
+        </button>
+        <button onclick="openForm(
+        'https://forms.gle/d84NcKqXi6HD5JZ67'
+        )">
+            FORM TINDAKAN
+        </button>
+        <button onclick="openForm(
+        'https://forms.gle/nkuT1DiWDMi2szmC6'
+        )">
+            FORM VERIFIKASI
+        </button>
+        <button onclick="openDashboard()">
+            DASHBOARD
+        </button>
+    </div>
 </div>
 
 <div class="container">
@@ -336,7 +325,7 @@ canvas{
 <thead>
 <tr>
     <th class="center">
-        Tahun
+        Tanggal Tilik
     </th>
     <th>
         Nama Unit
@@ -344,17 +333,20 @@ canvas{
     <th>
         Kepala Unit
     </th>
-    <th class="right">
-        Total Omzet
-    </th>
-    <th class="right">
-        EBITDA / Laba Bersih
+    <th class="center">
+        Jumlah Temuan
     </th>
     <th class="center">
-        Skor KPI
+        Tanggal Verifikasi
+    </th>
+    <th>
+        Nama Verifikator
     </th>
     <th class="center">
-        Nilai
+        Jumlah Perbaikan
+    </th>
+    <th class="center">
+        Progres
     </th>
     <th>
         Lampiran
@@ -372,60 +364,8 @@ canvas{
 <script>
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbygK5MqLfx__2V0zThqqwgfi3c7wDTKZL1X31QVVsog0lqFFFoolBZXN7JnH4O2uDgdmg/exec";
+"https://script.google.com/macros/s/AKfycbyv1LEsDvqucQpW3aUXbxVMfknY30P4JUTWfE_izqz3wq6rNLASFv5tntqApmCpzSMg/exec";
 let allData = [];
-let filteredData = [];
-
-function filterTahun(){
-    const tahun =
-        document.getElementById(
-            "cmbTahun"
-        ).value;
-    filteredData =
-        allData.filter(x =>
-            x.tahun == tahun
-        );
-    tampilData(filteredData);
-}
-
-function isiComboTahun(){
-    const cmb =
-        document.getElementById("cmbTahun");
-    cmb.innerHTML = "";
-    // ambil tahun unik
-    const tahun =
-        [...new Set(
-            allData.map(x => x.tahun)
-        )];
-    // urut descending
-    tahun.sort((a,b)=> b-a);
-    // isi combobox
-    tahun.forEach(t => {
-        cmb.innerHTML +=
-            `<option value="${t}">
-                ${t}
-            </option>`;
-    });
-    // otomatis pilih tahun terbaru
-    cmb.selectedIndex = 0;
-    // default tahun terbaru
-    if(tahun.length > 0){
-        cmb.value = tahun[0];
-    }
-}
-
-function filterTahun(){
-    const tahun =
-        document.getElementById(
-            "cmbTahun"
-        ).value;
-    // SEMUA DATA TAHUN
-    const dataTahun =
-        allData.filter(x =>
-            x.tahun == tahun
-        );
-    tampilData(dataTahun);
-}
 
 function openForm(url){
     window.open(url, "_blank");
@@ -433,20 +373,13 @@ function openForm(url){
 
 async function loadData(){
     try{
-        const response =
-            await fetch(API_URL);
-        allData =
-            await response.json();
-        document.getElementById("loading")
-            .style.display = "none";
-        // isi combo tahun
-        isiComboTahun();
-        // tampilkan data tahun terakhir
-        filterTahun();
-    }
-    catch(err){
-        document.getElementById("loading")
-            .innerHTML =
+        const response = await fetch(API_URL);
+        allData = await response.json();
+        document.getElementById("loading").style.display = "none";
+        hitungSummary();
+        tampilData(); 
+    }catch(err){
+        document.getElementById("loading").innerHTML =
             "Gagal load data";
         console.log(err);
     }
@@ -464,54 +397,43 @@ function closeDashboard(){
 }
 
 let barChartObj = null;
-let pieOmzetObj = null;
-let pieEbitdaObj = null;
+let pieTemuanObj = null;
+let piePerbaikanObj = null;
 
 function buatGrafik(){
-    const tahun =
-        document.getElementById(
-        "cmbTahun"
-        ).value;
-    // data sesuai tahun terpilih
-    const dataGrafik =
-        allData.filter(x =>
-        x.tahun == tahun &&
-        x.progres == "P"
-        );
     // destroy chart lama
     if(barChartObj) barChartObj.destroy();
-    if(pieOmzetObj) pieOmzetObj.destroy();
-    if(pieEbitdaObj) pieEbitdaObj.destroy();
+    if(pieTemuanObj) pieTemuanObj.destroy();
+    if(piePerbaikanObj) piePerbaikanObj.destroy();
     const units = {};
-    dataGrafik.forEach(item => {
+    allData.forEach(item => {
         if(!units[item.unit]){
             units[item.unit] = {
-                omzet:0,
-                ebitda:0
+                temuan:0,
+                perbaikan:0
             };
         }
-        const omzet =
-            toNumber(item.omzet);
-            units[item.unit].omzet += omzet;
-        const ebitda =
-            toNumber(item.ebitda);
-            units[item.unit].ebitda += ebitda;
-        const hasil =
-            toDecimal(item.hasil);
-            units[item.unit].ebitda += hasil;
+        const jumlah =
+            parseFloat(item.jumlah) || 0;
+        if(item.progres == "T"){
+            units[item.unit].temuan += jumlah;
+        }
+        if(item.progres == "P"){
+            units[item.unit].perbaikan += jumlah;
+        }
     });
     // sorting
     const sorted =
         Object.entries(units)
         .sort((a,b)=>
-            b[1].omzet - a[1].omzet
+            b[1].temuan - a[1].temuan
         );
     const labels =
         sorted.map(x=>x[0]);
-    const omzet =
-        sorted.map(x=>x[1].omzet);
-    const ebitda =
-        sorted.map(x=>x[1].ebitda);
+    const temuan =
+        sorted.map(x=>x[1].temuan);
+    const perbaikan =
+        sorted.map(x=>x[1].perbaikan);
     // warna kontras
     const colors = [
         "#e53935",
@@ -533,107 +455,65 @@ function buatGrafik(){
     // =========================
 
     barChartObj = new Chart(
-    document.getElementById("barChart"),
-    {
-        type:"bar",
-        data:{
-            labels:labels,
-            datasets:[
-                {
-                    label:"Omzet",
-                    data:omzet,
-                    backgroundColor:"#1e88e5"
-                },
-                {
-                    label:"EBITDA/Laba Bersih",
-                    data:ebitda,
-                    backgroundColor:"#43a047"
-                }
-            ]
-        },
-        options:{
-            layout:{
-                padding:{
+        document.getElementById("barChart"),
+        {
+            type:"bar",
+            data:{
+                labels:labels,
+                datasets:[
+                    {
+                        label:"Temuan",
+                        data:temuan
+                    },
+                    {
+                        label:"Perbaikan",
+                        data:perbaikan
+                    }
+                ]
+            },
+            options:{
+                layout:{
+                    padding:{
                     top:10,
                     bottom:10,
                     left:10,
                     right:10
-                }
-            },
-            responsive:true,
-            maintainAspectRatio:false,
-            plugins:{
-                title:{
-                    display:true,
-                    text:"GRAFIK PENCAPAIAN KPI",
-                    font:{
-                        size:22,
-                        weight:"bold"
-                    },
-                    padding:{
-                        top:10,
-                        bottom:20
-                    },
-                    color:"#1565c0"
-                },
-                datalabels:{
-                    color:"#000",
-                    anchor:"end",
-                    align:"top",
-                    rotation:-90,
-                    offset:4,
-                    font:{
-                        size:8,
-                        weight:"bold"
-                    },
-                    formatter:function(value){
-                        return value.toLocaleString(
-                            "id-ID",
-                            {
-                                minimumFractionDigits:0,
-                                maximumFractionDigits:0
-                            }
-                        );
-                    }
-                }
-            },
-            scales:{
-                x:{
-                    ticks:{
-                        font:{
-                            size:10
-                        }
                     }
                 },
-
-                y:{
-                    ticks:{
+                responsive:true,
+                maintainAspectRatio:false,
+                plugins:{
+                    title:{
+                       display:true,
+                        text:"GRAFIK TEMUAN & PERBAIKAN",
                         font:{
-                            size:10
-                        }
-                    }
+                            size:22,
+                            weight:"bold"
+                         },
+                        padding:{
+                            top:10,
+                            bottom:20
+                        },
+                        color:"#1565c0"
+                    }                
                 }
-
             }
-        },
-        plugins:[ChartDataLabels]
-    }
+        }
     );
 
     // =========================
-    // PIE OMZET
+    // PIE TEMUAN
     // =========================
 
-    pieOmzetObj = new Chart(
-        document.getElementById("pieOmzet"),
+    pieTemuanObj = new Chart(
+        document.getElementById("pieTemuan"),
         {
             type:"pie",
             data:{
                 labels:labels,
                 datasets:[{
-                    data:omzet,
-                    backgroundColor:colors,
-                    radius:"90%"
+                    data:temuan,
+                    backgroundColor:colors
                 }]
             },
             options:{
@@ -648,7 +528,7 @@ function buatGrafik(){
                     },
                     title:{
                         display:true,
-                        text:"PENCAPAIAN OMZET",
+                        text:"TEMUAN TILIK",
                         font:{
                             size:18,
                             weight:"bold"
@@ -665,19 +545,18 @@ function buatGrafik(){
     );
 
     // =========================
-    // PIE EBITDA
+    // PIE PERBAIKAN
     // =========================
 
-    pieEbitdaObj = new Chart(
-        document.getElementById("pieEbitda"),
+    piePerbaikanObj = new Chart(
+        document.getElementById("piePerbaikan"),
         {
             type:"pie",
             data:{
                 labels:labels,
                 datasets:[{
-                    data:ebitda,
-                    backgroundColor:colors,
-                    radius:"90%"
+                    data:perbaikan,
+                    backgroundColor:colors
                 }]
             },
             options:{
@@ -692,7 +571,7 @@ function buatGrafik(){
                     },
                     title:{
                         display:true,
-                        text:"PENCAPAIAN EBITDA/LABA BERSIH",
+                        text:"PROGRES PERBAIKAN",
                         position:"bottom",
                         font:{
                             size:18,
@@ -740,16 +619,6 @@ async function downloadDashboardPDF(){
     const { jsPDF } = window.jspdf;
     const dashboard =
         document.querySelector(".dashboard-content");
-    const btn =
-        dashboard.querySelector(
-        ".download-dashboard-btn"
-        );
-        btn.style.display = "none";
-    const closeBtn =
-        dashboard.querySelector(
-            ".close"
-        );
-        closeBtn.style.display = "none";
     // capture dashboard
     dashboard.style.height = "auto";
     const canvas =
@@ -812,8 +681,6 @@ async function downloadDashboardPDF(){
     // download
     pdf.save("Dashboard_Tilik.pdf");
     dashboard.style.height = "96vh";
-    btn.style.display = "block";
-    closeBtn.style.display = "block";
 }
 
 
@@ -831,13 +698,13 @@ function formatTanggal(tgl){
 function hitungSummary(){
     // jumlah periode unik berdasarkan tanggal
     const uniqueTanggal =
-        [...new Set(allData.map(x => x.tahun))];
+        [...new Set(allData.map(x => x.tanggal))];
     const totalPeriode =
         uniqueTanggal.length;
     // total temuan
     const totalTemuan =
         allData
-        .filter(x => x.progres == "P")
+        .filter(x => x.progres == "T")
         .reduce((a,b) =>
             a + (parseFloat(b.jumlah) || 0), 0);
     // total perbaikan
@@ -896,490 +763,126 @@ function closePDF(){
         .src = "";
 }
 
-function tampilData(data){
+function tampilData(){
     const list =
         document.getElementById("listData");
     list.innerHTML = "";
-    // MASTER = DATA T
+    // ambil data progres T
     const dataT =
-        data.filter(x =>
-            x.progres == "T"
-        );
+        allData.filter(x => x.progres == "T");
+    if(dataT.length == 0){
+        list.innerHTML =
+            "<tr><td colspan='8'>Tidak ada data</td></tr>";
+        return;
+    }
+
     dataT.forEach(t => {
+
         // cari pasangan P
-    const p =
-            data.find(x =>
+        const p =
+            allData.find(x =>
                 x.progres == "P" &&
-                x.tahun == t.tahun &&
+                x.tanggal == t.tanggal &&
                 x.unit == t.unit
             );
-    const tr =
-            document.createElement("tr");
-        tr.innerHTML = `
-        <td align="center">
-            ${t.tahun}
-        </td>
-        <td>
-            ${t.unit}
-        </td>
-        <td>
-            ${t.pimpinan}
-        </td>
-        <td align="right">
-            ${formatAngka(toMoney(
-                p ? p.omzet : t.omzet
-            ))}
-        </td>
-        <td align="right">
-            ${formatAngka(toMoney(
-                p ? p.ebitda : t.ebitda
-            ))}
-        </td>
-        <td align="center">
-            ${formatHasil(
-                p ? p.hasil : t.hasil
-            )}
-        </td>
-        <td align="center">
-            ${p ? p.nilai : t.nilai}
-        </td>
-
-    <td class="lampiran-cell">
-
-    <!-- RENCANA -->
-    <span class="icon-slot">
-        ${t.fileId ? `
-        <span class="pdf-icon"
-            title="Rencana KPI"
-            onclick="showPDF('${t.fileId}')">
-            🖊️
-        </span>
-        ` : ""}
-    </span>
-
-    <!-- PROGRES -->
-    <span class="icon-slot">
-        ${p && p.fileId ? `
-        <span class="pdf-icon"
-            title="Progress KPI"
-            onclick="showPDF('${p.fileId}')">
-            🛂
-        </span>
-        ` : ""}
-    </span>
-
-    <!-- DASHBOARD -->
-    <span class="icon-slot">
-        <span class="pdf-icon"
-            title="Dashboard Unit"
-            onclick="openUnitDashboard('${t.unit}')">
-            📊
-        </span>
-    </span>
-    </td>
-    `;
-    list.appendChild(tr);
-    });
-}
-
-function formatHasil(nilai){
-    if(nilai == null || nilai == "")
-        return "0,00";
-    return parseFloat(nilai)
-        .toLocaleString(
-            "id-ID",
-            {
-                minimumFractionDigits:2,
-                maximumFractionDigits:2
+        let jumlahT =
+            parseFloat(t.jumlah) || 0;
+        let jumlahP = 0;
+        let progres = "0%";
+        if(p){
+            jumlahP =
+                parseFloat(p.jumlah) || 0;
+            if(jumlahT > 0){
+                progres =
+                    (
+                        (jumlahP / jumlahT) * 100
+                    ).toFixed(0) + "%";
             }
-        );
+        }
+
+        // PDF TEMUAN
+        let pdfT = t.link;
+        if(!pdfT || pdfT == ""){
+            pdfT =
+                "https://drive.google.com/file/d/" +
+                t.fileId +
+                "/preview";
+        }
+
+        // PDF PERBAIKAN
+        let pdfP = "";
+
+        if(p){
+            pdfP = p.link;
+            if(!pdfP || pdfP == ""){
+                pdfP =
+                    "https://drive.google.com/file/d/" +
+                    p.fileId +
+                    "/preview";
+            }
+
+        }
+
+        const tr =
+            document.createElement("tr");
+
+        tr.innerHTML = `
+        <tr>
+            <td align="center">
+                ${formatTanggal(t.tanggal)}
+            </td>
+            <td> 
+              ${t.unit}
+            </td>
+            <td> 
+              ${t.pimpinan}
+            </td>
+            <td align="center">
+               ${jumlahT}
+            </td>
+            <td align="center">
+               ${p ? formatTanggal(p.tanggalv) : "-"}
+            </td>
+            <td>
+               ${p ? p.namav : "-"}
+            </td>
+            <td align="center">
+              ${jumlahP}
+            </td>
+            <td align="center">
+              ${progres}
+            </td>
+            <td class="lampiran-cell">
+
+            <!-- PDF TEMUAN -->
+            <span class="pdf-icon"
+              title="Temuan"
+              onclick="showPDF('${t.fileId}')">
+              🔍
+            </span>
+
+            <!-- PDF PERBAIKAN -->
+            ${p ? `
+            <span class="pdf-icon"
+                  title="Perbaikan"
+                  onclick="showPDF('${p.fileId}')">
+                  ✅
+            </span>
+          ` : `
+            <span class="pdf-placeholder"></span>
+          `}
+           </td>
+        </tr>
+        `;
+        list.appendChild(tr);
+    });
+
 }
 
-function toNumber(nilai){
-    if(!nilai)
-        return 0;
-    // ubah ke string
-    nilai = nilai.toString();
-    // hapus titik ribuan
-    nilai = nilai.replace(/\./g, "");
-    // ganti koma jadi titik
-    nilai = nilai.replace(",", ".");
-    // convert number
-    return parseFloat(nilai) || 0;
-}
-
-function toDecimal(nilai){
-    if(!nilai)
-        return 0;
-    nilai = nilai.toString().trim();
-    // hanya ganti koma ke titik
-    nilai = nilai.replace(",", ".");
-    return parseFloat(nilai) || 0;
-}
-
-function formatAngka(nilai){
-    if(nilai == null || nilai == "")
-        return "0,00";
-    return parseFloat(nilai)
-        .toLocaleString("id-ID", {
-            minimumFractionDigits:2,
-            maximumFractionDigits:2
-        });
-}
-
-let chartEbitdaObj = null;
-let chartOmzetObj = null;
-let chartKPIObj = null;
-
-
-function toMoney(nilai){
-    if(!nilai)
-        return 0;
-    nilai = nilai.toString().trim();
-    // hapus titik ribuan
-    nilai =
-        nilai.replace(/\./g, "");
-    // ubah koma jadi titik
-    nilai =
-        nilai.replace(",", ".");
-    return parseFloat(nilai) || 0;
-}
-
-function openUnitDashboard(unit){
-    document.getElementById(
-        "unitDashboardModal"
-    ).style.display = "block";
-    // destroy chart lama
-    if(chartEbitdaObj)
-        chartEbitdaObj.destroy();
-    if(chartOmzetObj)
-        chartOmzetObj.destroy();
-    if(chartKPIObj)
-        chartKPIObj.destroy();
-    // filter unit
-    const tahun =
-        document.getElementById(
-        "cmbTahun"
-    ).value;
-    const dataUnit =
-        allData.filter(x =>
-        x.unit == unit &&
-        x.tahun <= tahun &&
-        x.progres == "P"
-    );
-    // sorting tahun
-    dataUnit.sort((a,b)=>
-        a.tahun - b.tahun
-    );
-    // label tahun
-    const labels =
-        dataUnit.map(x => x.tahun);
-    // data
-    const omzet =
-        dataUnit.map(x =>
-            toNumber(x.omzet)
-        );
-    const ebitda =
-        dataUnit.map(x =>
-            toNumber(x.ebitda)
-        );
-    const hasil =
-        dataUnit.map(x =>
-            toDecimal(x.hasil)
-        );
-
-    // =========================
-    // EBITDA
-    // =========================
-
-    chartEbitdaObj =
-        new Chart(
-        document.getElementById(
-            "chartEbitda"
-        ),
-        {
-            type:"bar",
-            data:{
-                labels:labels,
-                datasets:[{
-                    label:"EBITDA",
-                    data:ebitda,
-                    backgroundColor:"#43a047"
-                }]
-            },
-            options:{
-                responsive:true,
-                maintainAspectRatio:false,
-                plugins:{
-                    legend:{
-                        display:false
-                    },
-                    title:{
-                        display:true,
-                        text:
-                        "PENCAPAIAN EBITDA/LABA BERSIH",
-                        font:{
-                            size:18,
-                            weight:"bold"
-                        }
-                    },
-                    datalabels:{
-                        anchor:"end",
-                        align:"top",
-                        color:"#000",
-                        font:{
-                            weight:"bold",
-                            size:11
-                        },
-                        formatter:function(value){
-                            return value.toLocaleString(
-                            "id-ID",
-                            {
-                                minimumFractionDigits:0,
-                                maximumFractionDigits:0
-                            }
-                            );
-                        }                    
-                    }
-                }
-            },
-            plugins:[ChartDataLabels]
-        });
-
-    // =========================
-    // OMZET
-    // =========================
-
-    chartOmzetObj =
-        new Chart(
-        document.getElementById(
-            "chartOmzet"
-        ),
-
-        {
-            type:"bar",
-            data:{
-                labels:labels,
-                datasets:[{
-                    label:"Omzet",
-                    data:omzet,
-                    backgroundColor:"#1e88e5"
-                }]
-            },
-            options:{
-                responsive:true,
-                maintainAspectRatio:false,
-                plugins:{
-                    legend:{
-                        display:false
-                    },
-                    title:{
-                        display:true,
-                        text:
-                        "PEROLEHAN OMZET",
-                        font:{
-                            size:18,
-                            weight:"bold"
-                        }
-                    },
-                    datalabels:{
-                        anchor:"end",
-                        align:"top",
-                        color:"#000",
-                        font:{
-                            weight:"bold",
-                            size:11
-                        },
-                        formatter:function(value){
-                            return value.toLocaleString(
-                            "id-ID",
-                            {
-                                minimumFractionDigits:0,
-                                maximumFractionDigits:0
-                            }
-                            );
-                        }                    
-                    }
-                }
-            },
-            plugins:[ChartDataLabels]
-        });
-
-    // =========================
-    // KPI
-    // =========================
-
-    chartKPIObj =
-        new Chart(
-
-        document.getElementById(
-            "chartKPI"
-        ),
-
-        {
-            type:"line",
-            data:{
-                labels:labels,
-                datasets:[{
-                    label:"KPI",
-                    data:hasil,
-                    backgroundColor:"#fb8c00",
-                    borderColor:"#fb8c00",
-                    backgroundColor:"#fb8c00",
-                    pointRadius:5,
-                    pointHoverRadius:7,
-                    tension:0.3,
-                    fill:false
-                }]
-            },
-            options:{
-                responsive:true,
-                maintainAspectRatio:false,
-                plugins:{
-                    legend:{
-                        display:false
-                    },
-                    title:{
-                        display:true,
-                        text:
-                        "KINERJA KPI",
-                        font:{
-                            size:18,
-                            weight:"bold"
-                        }
-                    },
-                    datalabels:{
-                        anchor:"end",
-                        align:"top",
-                        color:"#000",
-                        font:{
-                            weight:"bold",
-                            size:11
-                        },
-                        formatter:function(value){
-                            return value
-                            .toFixed(2)
-                            .replace(".", ",");
-                        }                    
-                    }
-                }
-            },
-            plugins:[ChartDataLabels]
-        });
-}
-
-function closeUnitDashboard(){
-    document.getElementById(
-        "unitDashboardModal"
-    ).style.display = "none";
-}
-
-async function downloadUnitDashboardPDF(){
-    const { jsPDF } = window.jspdf;
-    const dashboard =
-        document.querySelector(
-            ".unit-dashboard-content"
-        );
-    const btn =
-        dashboard.querySelector(
-        ".download-dashboard-btn"
-        );
-        btn.style.display = "none";
-    const closeBtn =
-        dashboard.querySelector(
-            ".close"
-        );
-        closeBtn.style.display = "none";
-    dashboard.style.height = "auto";
-    const canvas =
-        await html2canvas(dashboard, {
-            scale:2,
-            useCORS:true,
-            backgroundColor:"#ffffff",
-            windowWidth: dashboard.scrollWidth,
-            windowHeight: dashboard.scrollHeight
-        });
-    const imgData =
-        canvas.toDataURL("image/png");
-    const pdf =
-        new jsPDF({
-            orientation:"landscape",
-            unit:"mm",
-            format:"a4"
-        });
-    const pageWidth =
-        pdf.internal.pageSize.getWidth();
-    const pageHeight =
-        pdf.internal.pageSize.getHeight();
-    const margin = 5;
-    const availableWidth =
-        pageWidth - (margin * 2);
-    const availableHeight =
-        pageHeight - (margin * 2);
-    const ratio =
-        Math.min(
-            availableWidth / canvas.width,
-            availableHeight / canvas.height
-        );
-    const finalWidth =
-        canvas.width * ratio;
-    const finalHeight =
-        canvas.height * ratio;
-    const x =
-        (pageWidth - finalWidth) / 2;
-    const y =
-        (pageHeight - finalHeight) / 2;
-    pdf.addImage(
-        imgData,
-        "PNG",
-        x,
-        y,
-        finalWidth,
-        finalHeight
-    );
-    pdf.save("Dashboard_Unit.pdf");
-    dashboard.style.height = "96vh";
-    btn.style.display = "block";
-    closeBtn.style.display = "block";
-}
 
 loadData();
 
 </script>
-
-<div id="unitDashboardModal" class="modal">
-    <<div class="unit-dashboard-content">
-        <span class="close"
-            onclick="closeUnitDashboard()">
-            &times;
-        </span>
-        <button class="download-dashboard-btn"
-            onclick="downloadUnitDashboardPDF()">
-            DOWNLOAD PDF
-        </button>
-        <div class="unit-dashboard-grid">
-            <!-- EBITDA -->
-            <div class="chart-box">
-                <canvas id="chartEbitda"></canvas>
-            </div>
-            <!-- kanan -->
-            <div style="
-                display:grid;
-                grid-template-rows:48% 48%;
-                gap:10px;
-            ">
-                <!-- omzet -->
-                <div class="chart-box">
-                    <canvas id="chartOmzet"></canvas>
-                </div>
-                <!-- KPI -->
-                <div class="chart-box">
-                    <canvas id="chartKPI"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div id="pdfModal" class="modal">
     <div class="modal-content">
@@ -1414,7 +917,7 @@ loadData();
             <div class="pie-container">
                 <!-- pie atas -->
                 <div class="chart-box">
-                    <canvas id="pieOmzet"></canvas>
+                    <canvas id="pieTemuan"></canvas>
                 </div>
                 <!-- legenda -->
                 <div class="legend-box"
@@ -1422,7 +925,7 @@ loadData();
                 </div>
                 <!-- pie bawah -->
                 <div class="chart-box">
-                    <canvas id="pieEbitda"></canvas>
+                    <canvas id="piePerbaikan"></canvas>
                 </div>
             </div>
         </div>
