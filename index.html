@@ -299,6 +299,16 @@ canvas{
     }
 }
 
+.page-wrapper{
+    width:max-content;
+    min-width:100%;
+}
+
+.table-container{
+    overflow-x:auto;
+}
+
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -309,27 +319,30 @@ canvas{
 
 <body>
 
-<div class="header">
-    MANAGEMENT VISIT - Ver.1.2
-</div>
+<div class="page-wrapper">
 
-<div class="toolbar">
-    <div class="summary-box">
-        <div>
-            Jumlah Periode Tilik :
-            <span id="totalPeriode">0</span>
-        </div>
-        <div>
-            Jumlah Temuan :
-            <span id="totalTemuan">0</span>
-        </div>
-        <div>
-            Jumlah Perbaikan :
-            <span id="totalPerbaikan">0</span>
-        </div>
-        <div>
-            Progres Perbaikan :
-            <span id="totalProgress">0%</span>
+    <div class="header">
+        MANAGEMENT VISIT - Ver.1.2
+    </div>
+
+    <div class="toolbar">
+        <div class="summary-box">
+            <div>
+                Jumlah Periode Tilik :
+                <span id="totalPeriode">0</span>
+            </div>
+            <div>
+                Jumlah Temuan :
+                <span id="totalTemuan">0</span>
+            </div>
+            <div>
+                Jumlah Perbaikan :
+                <span id="totalPerbaikan">0</span>
+            </div>
+            <div>
+                Progres Perbaikan :
+                <span id="totalProgress">0%</span>
+            </div>
         </div>
     </div>
 
@@ -353,54 +366,52 @@ canvas{
             DASHBOARD
         </button>
     </div>
-</div>
 
-<div id="loading" class="loading">
-    <div class="spinner"></div>
-    <div class="loading-text">
-        Loading Data Management Visit...
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+            <div class="loading-text">
+                Loading Data Management Visit...
+        </div>
     </div>
-</div>
 
-<table>
+    <table>
 
-<thead>
-<tr>
-    <th class="center">
-        Tanggal Tilik
-    </th>
-    <th>
-        Nama Unit
-    </th>
-    <th>
-        Kepala Unit
-    </th>
-    <th class="center">
-        Jumlah Temuan
-    </th>
-    <th class="center">
-        Tanggal Verifikasi
-    </th>
-    <th>
-        Nama Verifikator
-    </th>
-    <th class="center">
-        Jumlah Perbaikan
-    </th>
-    <th class="center">
-        Progres
-    </th>
-    <th>
-        Lampiran
-    </th>
-</tr>
-</thead>
+    <thead>
+    <tr>
+        <th class="center">
+            Tanggal Tilik
+        </th>
+        <th>
+            Nama Unit
+        </th>
+        <th>
+            Kepala Unit
+        </th>
+        <th class="center">
+            Jumlah Temuan
+        </th>
+        <th class="center">
+            Tanggal Verifikasi
+        </th>
+        <th>
+            Nama Verifikator
+        </th>
+        <th class="center">
+            Jumlah Perbaikan
+        </th>
+        <th class="center">
+            Progres
+        </th>
+        <th>
+            Lampiran
+        </th>
+    </tr>
+    </thead>
 
-<tbody id="listData"></tbody>
+    <tbody id="listData"></tbody>
 
-</table>
+    </table>
 
-</div>
 </div>
 
 <script>
