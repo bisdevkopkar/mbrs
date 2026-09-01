@@ -1,991 +1,932 @@
+
 <!DOCTYPE html>
-<html lang="id">
+
+<html lang="en">
+
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Management Visit - Ver.1.2</title>
-
-<style>
-
-.summary-box{
-    display:flex;
-    flex-wrap:wrap;
-    gap:20px;
-    align-items:center;
-    font-weight:bold;
-    color:#1565c0;
-}
-
-.button-group{
-    display:flex;
-    gap:10px;
-}    
-
- .download-btn{
-    position:absolute;
-    top:10px;
-    right:60px;
-    z-index:1000;
-    background:#1565c0;
-    color:white;
-    border:none;
-    padding:8px 14px;
-    border-radius:5px;
-    cursor:pointer;
-    font-weight:bold;
-}   
-
-.modal{
-    display:none;
-    position:fixed;
-    z-index:999;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.7);
-}
-
-.modal-content{
-    position:relative;
-    width:90%;
-    height:90%;
-    margin:2% auto;
-    background:white;
-    border-radius:10px;
-    overflow:hidden;
-}
-
-.close{
-    position:absolute;
-    right:15px;
-    top:10px;
-    font-size:30px;
-    cursor:pointer;
-    z-index:1000;
-    color:red;
-    font-weight:bold;
-}
-
-#pdfFrame{
-    width:100%;
-    height:100%;
-    border:none;
-}    
-
-.table-container{
-    padding:15px;
-    overflow-x:auto;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th{
-    background:#1565c0;
-    color:white;
-    padding:12px;
-    text-align:left;
-}
-
-td{
-    padding:8px 10px;
-}
-
-tbody tr{
-    transition:0.2s;
-}
-
-/* baris ganjil */
-tbody tr:nth-child(odd){
-    background:white;
-}
-
-/* baris genap */
-tbody tr:nth-child(even){
-    background:#eaf3ff;
-}
-
-/* hover */
-tbody tr:hover{
-    background:#d6e9ff;
-}
-
-th{
-    background:#1565c0;
-    color:white;
-    padding:10px;
-    text-align:left;
-    white-space:nowrap;
-}
-
-.lampiran-cell{
-    white-space:nowrap;
-}
-
-.pdf-icon{
-    cursor:pointer;
-    font-size:22px;
-}
-
-*{
-    box-sizing:border-box;
-}
-
-body{
-    margin:0;
-    font-family:Arial, sans-serif;
-    background:#f0f2f5;
-}
-
-.header{
-    background:#1565c0;
-    color:white;
-    padding:15px;
-    font-size:24px;
-    font-weight:bold;
-    text-align:center;
-}
-
-.toolbar{
-    background:white;
-    padding:10px;
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    align-items:center;
-    justify-content:center;
-    box-shadow:0 2px 5px rgba(0,0,0,0.15);
-}
-
-button{
-    background:#1976d2;
-    color:white;
-    border:none;
-    padding:10px 15px;
-    border-radius:6px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-button:hover{
-    background:#0d47a1;
-}
-
-.container{
-    padding:15px;
-}
-
-iframe{
-    width:100%;
-    height:500px;
-    border:none;
-    margin-top:10px;
-    border-radius:8px;
-}
-
-.loading{
-    text-align:center;
-    padding:20px;
-    font-size:18px;
-}
-
-.center{
-    text-align:center;
-}
-
-.dashboard-content{
-    position:relative;
-    width:96vw;
-    height:96vh;
-    margin:1vh auto;
-    background:white;
-    border-radius:10px;
-    padding:15px;
-    overflow:hidden;
-}
-
-.dashboard-grid{
-    display:grid;
-    grid-template-columns:65% 35%;
-    gap:10px;
-    width:100%;
-    height:calc(100% - 20px);
-}
-
-.chart-box{
-    position:relative;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-}
-
-.pie-container{
-    display:grid;
-    grid-template-rows:42% auto 42%;
-    gap:5px;
-    height:100%;
-    align-items:center;
-}
-
-.legend-box{
-    text-align:center;
-    font-size:13px;
-    font-weight:bold;
-    color:#444;
-}
-
-canvas{
-    width:100% !important;
-    height:100% !important;
-}
-
-.download-dashboard-btn{
-    position:absolute;
-    top:10px;
-    right:70px;
-    z-index:1000;
-    background:#2e7d32;
-    color:white;
-    border:none;
-    padding:10px 16px;
-    border-radius:6px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.loadinglama{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:white;
-    z-index:9999;
-
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-}
-
-.loading{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    background:white;
-    z-index:9999;
-}
-
-.spinner{
-    width:60px;
-    height:60px;
-    border:6px solid #ddd;
-    border-top:6px solid #1565c0;
-    border-radius:50%;
-    animation:spin 1s linear infinite;
-}
-
-.loading-text{
-    margin-top:15px;
-    font-size:18px;
-    font-weight:bold;
-    color:#1565c0;
-    text-align:center;
-}
-
-@keyframes spin{
-    0%{
-        transform:rotate(0deg);
-    }
-    100%{
-        transform:rotate(360deg);
-    }
-}
-
-.page-wrapper{
-    width:max-content;
-    min-width:100%;
-}
-
-.table-container{
-    overflow-x:auto;
-}
-
-.toolbar{
-    margin-bottom:12px;
-}
-
-.button-group{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-top:15px;
-    margin-bottom:12px;
-}
-
-</style>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+    <base href="../../../">
+    <title>HUMAN RESOURCES INFORMATION SYSTEM</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Sistem Informasi Manajemen Sumber Daya Manusia" />
+    <meta name="keywords" content="Kominfo" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="article" />
+    <link rel="shortcut icon" href="logo.png" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://sayangwarga.surabaya.go.id/assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="https://sayangwarga.surabaya.go.id/assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="https://sayangwarga.surabaya.go.id/assets/vendor/dist/aos.css" rel="stylesheet">
+	<script src="https://sayangwarga.surabaya.go.id/assets/vendor/dist/aos.js"></script>
 </head>
 
-<body>
+<style>
+    .bodycolor {
+        background-image: url('background.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: right top;
+    }
 
+    .container {
+        margin-right: auto;
+        margin-left: auto;
+        padding-right: 15px;
+        padding-left: 15px;
+        width: 100%;
+        display: flex;
+    }
 
-    <div id="loading" class="loading">
-        <div class="spinner"></div>
-            <div class="loading-text">
-                Loading Data Management Visit...
+    .log1 {
+		position: absolute;
+		z-index: 6;
+        animation-name: log1;
+  		animation-duration: 5s;
+		animation-iteration-count: infinite;
+    }
+
+    .log2 {
+		position: absolute;
+		z-index: 3;
+        animation-name: log2;
+  		animation-duration: 5s;
+		animation-iteration-count: infinite;
+    }
+
+    .log3 {
+
+		position: absolute;
+		z-index: 5;
+        animation-name: log3;
+  		animation-duration: 4s;
+		animation-iteration-count: infinite;
+    }
+
+    .log4 {
+		position: absolute;
+		z-index: 4;
+        animation-name: log3;
+  		animation-duration: 5s;
+		animation-iteration-count: infinite;
+    }
+
+    .log5 {
+		position: absolute;
+		z-index: 2;
+        animation-name: log5;
+  		animation-duration: 6s;
+		animation-iteration-count: infinite;
+    }
+    .log6 {
+		position: absolute;
+		z-index: 1;
+        animation-name: log6;
+  		animation-duration: 6s;
+		animation-iteration-count: infinite;
+    }
+
+    .btn.btn-primary, .swal2-confirm {
+        color: #fff;
+        background-color: #FF414D;
+    }
+
+    .btn.btn-primary:hover:not(.btn-active), .swal2-confirm:hover {
+        color: #fff;
+        background-color: #7A1012 !important;
+    }
+
+    @keyframes  log1 {
+		0% {transform: scale(0.98);}
+  		25% {transform: translateZ(0) scale(1);}
+		50% {transform: scale(0.98);}
+  		75% {transform: translateZ(0) scale(1);}
+  		100% {transform: scale(0.98);}
+	}
+	@keyframes  log2 {
+		0% {transform: scale(1);}
+  		25% {transform: translateZ(0) scale(0.97);}
+		50% {transform: scale(1);}
+  		75% {transform: translateZ(0) scale(0.97);}
+  		100% {transform: scale(1);}
+	}
+	@keyframes  log3 {
+		0% {transform: scale(0.95); opacity: 100%;}
+  		25% {transform: translateZ(0) scale(1); opacity: 0%;}
+		50% {transform: scale(0.95); opacity: 100%; }
+  		75% {transform: translateZ(0) scale(1); opacity: 0%;}
+  		100% {transform: scale(0.95); opacity: 100%;}
+	}
+    @keyframes  log4 {
+		0% {transform: scale(1); opacity: 0%;}
+  		25% {transform: translateZ(0) scale(0.95); opacity: 100%;}
+		50% {transform: scale(1); opacity: 0%;}
+  		75% {transform: translateZ(0) scale(0.95); opacity: 100%;}
+  		100% {transform: scale(1); opacity: 0%; animation-delay: 1000s}
+	}
+	@keyframes  log5 {
+		0% {transform: scale(0.95);}
+  		25% {transform: translateZ(0) scale(1);}
+		50% {transform: scale(0.95);}
+  		75% {transform: translateZ(0) scale(1);}
+  		100% {transform: scale(0.95);}
+	}
+    @keyframes  log6 {
+		0% {transform: scale(1);}
+  		25% {transform: translateZ(0) scale(0.95);}
+		50% {transform: scale(1);}
+  		75% {transform: translateZ(0) scale(0.95);}
+  		100% {transform: scale(1);}
+	}
+
+    @media  only screen and (max-width: 767px)
+        {
+            .ilus
+            {
+                padding: 15px 0;
+                width: 95%;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+            }
+
+			#gambar{
+				display: none !important;
+			}
+
+            .mobile {
+                min-height: 100%
+            }
+        }
+    
+    #pop-up-hjks .modal-content{
+        background-color: transparent;
+        border: none;
+    }
+
+    #pop-up-hjks .modal-header{
+        border-bottom: none;
+    }
+
+    #pop-up-hjks .modal-body img{
+        width: 100%;
+    }
+
+    #pop-up-hjks .modal-footer{
+        border-top: none;
+        justify-content: center;
+    }
+
+    .flag-img {
+        width: 90px;
+        position: absolute;
+        animation: berkibar 1s ease-in-out infinite alternate;
+        transform-origin: bottom;
+    }
+
+    @keyframes  berkibar {
+        0% { transform: scaleY(1); }
+        50% { transform: scaleY(1.1); }
+        100% { transform: scaleY(1); }
+    }
+
+    .hr-text {
+        line-height: 1em;
+        position: relative;
+        outline: 0;
+        border: 0;
+        color: black;
+        text-align: center;
+        height: 1.5em;
+        opacity: 0.5;
+      }
+
+      .hr-text:before {
+        content: '';
+        background: linear-gradient(to right, transparent, #818078, transparent);
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 100%;
+        height: 1px;
+      }
+      .hr-text:after {
+        content: attr(data-content);
+        position: relative;
+        display: inline-block;
+        color: black;
+
+        padding: 0 0.5em;
+        line-height: 1.5em;
+        color: #818078;
+        background-color: #fcfcfa;
+      }
+      /* =========================
+        BUTTON LOGIN PREMIUM
+      ========================= */
+      .btn-2026 {
+          background: linear-gradient(90deg, #f84f00, #fa2929);
+          border: none !important;
+          color: #fff !important;
+          font-weight: 600;
+          letter-spacing: 0.5px;
+
+          border-radius: 10px;
+          transition: all 0.3s ease;
+
+          position: relative;
+          overflow: hidden;
+          z-index: 1;
+      }
+
+      /* efek glow halus */
+      .btn-2026::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(120deg, rgba(255,255,255,0.3), transparent, rgba(255,255,255,0.3));
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          z-index: -1;
+      }
+
+      /* hover utama */
+      .btn-2026:hover {
+          transform: translateY(-2px) scale(1.02);
+          box-shadow: 0 8px 20px rgba(250, 41, 41, 0.35);
+      }
+
+      /* efek shimmer saat hover */
+      .btn-2026:hover::before {
+          opacity: 1;
+          animation: shimmer 1s linear infinite;
+      }
+
+      /* klik (pressed) */
+      .btn-2026:active {
+          transform: scale(0.98);
+          box-shadow: 0 4px 10px rgba(250, 41, 41, 0.2);
+      }
+
+      /* animasi shimmer */
+      @keyframes  shimmer {
+          0% {
+              transform: translateX(-100%);
+          }
+          100% {
+              transform: translateX(100%);
+          }
+      }
+
+      /* icon dalam button */
+        .btn-2026 i {
+            transition: transform 0.3s ease;
+        }
+
+        /* efek hover icon ikut gerak */
+        .btn-2026:hover i {
+            transform: translateX(-3px);
+        }
+
+        .divider {
+            position: relative;
+            text-align: center;
+        }
+
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            border-top: 1px solid #e4e6ef;
+            transform: translateY(-50%);
+        }
+
+        .divider span {
+            position: relative;
+            background: #fff; /* ini kunci: nutup garis */
+            padding: 0 12px;
+            color: #99a1b7;
+            font-weight: 600;
+            font-size: 12px;
+            z-index: 1;
+        }
+.footer-info-btn {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    min-height: 78px;
+    transition: all 0.2s ease;
+}
+
+.footer-info-btn:hover {
+    transform: translateY(-1px);
+}
+
+.footer-info-icon {
+    font-size: 30px !important;
+    flex-shrink: 0;
+}
+
+.modal-dokumen .modal-dialog {
+    max-width: 1200px;
+}
+
+.modal-dokumen .modal-content {
+    border: 0;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.modal-dokumen .modal-header {
+    padding: 20px 25px;
+}
+
+.modal-dokumen .modal-body {
+    background: #f5f8fa;
+    padding: 20px;
+}
+
+.modal-dokumen-toolbar {
+    background: #fff;
+    border: 1px solid #e4e6ef;
+    border-radius: 10px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+}
+
+.modal-dokumen-content {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+}
+
+.modal-dokumen-content img {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+@media (max-width: 767px) {
+    .footer-info-btn {
+        font-size: 10px;
+        gap: 8px !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    .footer-info-icon {
+        font-size: 24px !important;
+    }
+
+    .modal-dokumen .modal-body {
+        padding: 10px;
+    }
+
+    .modal-dokumen-content {
+        padding: 5px;
+    }
+}
+</style>
+
+<body id="kt_body" class="bodycolor" style="justify-content: center;"> 
+    
+<div class="container">
+    <div class="d-flex flex-column flex-root ilus">
+        <div class="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed" style="max-width: 100%">
+            <div class="row">
+                <div class="col-md-6 d-flex flex-center flex-column flex-column-fluid" id="gambar" style="padding: 50px;">
+                    <img src="hris.png" alt="" srcset="" style="width: 100%;margin-top: 115px;">
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex flex-center flex-column p-5 pb-lg-15">
+                        <img alt="Logo" src="bendera.png" class="mb-3" style="width: 85%;" />
+                        <div class="d-flex flex-center flex-column flex-column-fluid px-3 px-sm-5 px-lg-10 py-5">
+                            <div class="card shadow-sm w-100 w-sm-400px w-lg-450px">
+                                
+                                <!-- Body -->
+                                <div class="card-body p-5 p-sm-8 p-lg-10 text-center">
+                                    
+                                    <!-- Logo -->
+                                    <img alt="Logo" src="login.png" class="h-60px h-sm-70px h-lg-80px"/>
+                                    
+                                    <!-- Title -->
+                                    
+                                    <div class="separator border-secondary my-5"></div>
+                                    <!-- Form -->
+                                    <form class="form w-100" id="form">
+                                        <input type="hidden" name="_token" value="96kyiWbzy2TTgwb4RVoZrOisZbPtuiO3Dk4RYWGR">                                        
+                                        <!-- Username -->
+                                        <div class="fv-row mb-4 text-start">
+                                            <label class="form-label fw-semibold text-gray-600">
+                                                <i class="fa-solid fa-user me-2 text-success"></i> Username
+                                            </label>
+                                            <input 
+                                                class="form-control form-control-lg form-control-solid" 
+                                                name="username"
+                                                id="username" 
+                                                type="text" 
+                                                placeholder="Masukkan username"
+                                                autocomplete="username"
+                                                style="text-transform:uppercase;"
+                                            />
+                                        </div>
+
+                                        <!-- Password -->
+                                        <div class="fv-row mb-4 text-start">
+                                            <label class="form-label fw-semibold text-gray-600">
+                                                <i class="fa-solid fa-lock me-2 text-success"></i> Password
+                                            </label>
+                                            <div class="input-group">
+                                                <input 
+                                                    class="form-control form-control-lg form-control-solid" 
+                                                    type="password" 
+                                                    id="passwordField" 
+                                                    placeholder="Masukkan password"
+                                                    autocomplete="current-password"
+                                                />
+                                                <span class="input-group-text bg-light" onclick="togglePassword()" style="cursor:pointer;">
+                                                    <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Button -->
+                                        <div class="d-grid mb-5">
+                                            <button type="submit" id="kt_sign_in_submit" class="btn btn-2026 btn-lg">
+                                                <span class="indicator-label btn-login">
+                                                    <i class="fa-solid fa-right-to-bracket me-2 text-white"></i> Login
+                                                </span>
+                                                <span class="indicator-progress wait-login">
+                                                    Please wait...
+                                                    <span class="spinner-border spinner-border-sm ms-2"></span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="card-footer p-0 overflow-hidden">
+                                    <div class="d-flex flex-row">
+
+                                        <a href="javascript:void(0)"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalKebijakanPrivasi"
+                                        class="btn btn-light-primary w-100 w-sm-50 rounded-0 rounded-bottom-start
+                                                d-flex align-items-center justify-content-center gap-3 py-4 footer-info-btn">
+
+                                            <i class="fa-solid fa-shield-halved footer-info-icon"></i>
+
+                                            <span class="text-start">
+                                                Kebijakan Privasi &amp;<br>
+                                                Perlindungan Data Perusahaan dan Karyawan
+                                            </span>
+                                        </a>
+
+                                        <a target="_BLANK" href="User Guide.pdf"
+                                        class="btn btn-light-warning w-100 w-sm-50 rounded-0 rounded-bottom-end
+                                                d-flex align-items-center justify-content-center gap-3 py-4 footer-info-btn">
+
+                                            <i class="fa-solid fa-book-open footer-info-icon"></i>
+
+                                            <span>
+                                                Buku Panduan
+                                            </span>
+                                        </a>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
-
-    <div class="header">
-        MANAGEMENT VISIT - Ver.1.2
-    </div>
-
-    <div class="toolbar">
-        <div class="summary-box">
-            <div>
-                Jumlah Periode Tilik :
-                <span id="totalPeriode">0</span>
-            </div>
-            <div>
-                Jumlah Temuan :
-                <span id="totalTemuan">0</span>
-            </div>
-            <div>
-                Jumlah Perbaikan :
-                <span id="totalPerbaikan">0</span>
-            </div>
-            <div>
-                Progres Perbaikan :
-                <span id="totalProgress">0%</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="button-group">
-        <button onclick="openForm(
-            'https://forms.gle/nXBesBgprcaK9qdJ8'
-            )">
-            FORM TILIK
-        </button>
-        <button onclick="openForm(
-            'https://forms.gle/d84NcKqXi6HD5JZ67'
-            )">
-            FORM TINDAKAN
-        </button>
-        <button onclick="openForm(
-            'https://forms.gle/nkuT1DiWDMi2szmC6'
-            )">
-            FORM VERIFIKASI
-        </button>
-        <button onclick="openDashboard()">
-            DASHBOARD
-        </button>
-    </div>
-
-<div class="table-container">
-    <table>
-    <thead>
-    <tr>
-        <th class="center"> Tanggal Tilik </th>
-        <th> Nama Unit </th>
-        <th> Kepala Unit </th>
-        <th class="center"> Jumlah Temuan </th>
-        <th class="center"> Tanggal Verifikasi </th>
-        <th> Nama Verifikator </th>
-        <th class="center"> Jumlah Perbaikan </th>
-        <th class="center"> Progres</th>
-        <th> Lampiran </th>
-    </tr>
-    </thead>
-    <tbody id="listData"></tbody>
-    </table>
 </div>
 
+<!-- Modal Kebijakan Privasi -->
+<div class="modal fade modal-dokumen"
+     id="modalKebijakanPrivasi"
+     tabindex="-1"
+     aria-labelledby="modalKebijakanPrivasiLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header bg-light-primary">
+                <div>
+                    <h3 class="modal-title fw-bold text-gray-800 mb-1"
+                        id="modalKebijakanPrivasiLabel">
+
+                        <i class="fa-solid fa-shield-halved text-primary me-2"></i>
+                        Kebijakan Privasi & Perlindungan Data Perusahaan dan Karyawan
+                    </h3>
+
+                    <div class="text-muted fs-7">
+                        Informasi mengenai pengelolaan dan perlindungan data perusahaan dan karyawan
+                    </div>
+                </div>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+
+                <!-- Toolbar Download -->
+                <div class="modal-dokumen-toolbar
+                            d-flex flex-column flex-sm-row
+                            align-items-sm-center
+                            justify-content-between
+                            gap-3">
+
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-file-pdf fs-2 text-danger me-3"></i>
+
+                        <div class="text-start">
+                            <div class="fw-bold text-gray-800">
+                                SOP Pengaturan Perlindungan Data dan Hak Akses
+                            </div>
+                            <div class="text-muted fs-8">
+                                Dokumen dalam format Image
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="kebijakan.png"
+                       download
+                       class="btn btn-primary">
+
+                        <i class="fa-solid fa-download me-2"></i>
+                        Download File
+                    </a>
+
+                </div>
+
+                <!-- Gambar -->
+                <div class="modal-dokumen-content">
+
+                    <img
+                        src="lingkup.png"
+                        alt="Ruang Lingkup Data HRIS">
+                        <br>
+<img
+                        src="kebijakan.png"
+                        alt="Pengaturan Perlindungan Data">
+
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal">
+                    <i class="fa-solid fa-xmark me-2"></i>
+                    Tutup
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal HJKS POP UP -->
+<div class="modal fade" id="pop-up-hjks" tabindex="-1" aria-labelledby="pop-up-hjksLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="">
+                
+                <p style="color:#f00">
+                    <b>Info Maintenance :</b><br>
+                        Sehubungan dengan maintenance aplikasi Sayang Warga yang akan dilaksanakan pada hari Kamis, 13 Agustus 2026 mulai pukul 08.00 sampai dengan Kamis, 2 April 2026 pukul 06.00 - selesai, disampaikan bahwa selama maintenance, aplikasi Sayang Warga tidak bisa diakses.
+                        Mohon maaf atas ketidaknyamanan ini.
+                        Terima kasih.</p>
+            </div>
+            <div class="modal-footer">
+                <a href="https://surabaya.go.id/" target="_blank" type="button" class="btn btn-primary">Selengkapnya...</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://sayangwarga.surabaya.go.id/assets/plugins/global/plugins.bundle.js"></script>
+    <script src="https://sayangwarga.surabaya.go.id/assets/js/scripts.bundle.js"></script>
+    
+    
 <script>
 
-const API_URL =
-"https://script.google.com/macros/s/AKfycbz2BXnmKAXu8zb5767kO6GujClFVrVdbpfqAfZ-04c83kG1Ge5qrLlzAoHG29kFi9N7/exec";
-let allData = [];
+const LOGIN_API =
+"https://script.google.com/macros/s/AKfycbx9ETUksCp-c86RVoPM4MR5TFYIwZg87SidmmxJWd_QXYHMhyU-4ksXM693TEfL6RyYvw/exec";
 
-function openForm(url){
-    window.open(url, "_blank");
-}
+const form = document.getElementById("form");
 
-async function loadData(){
-    try{
-        const response = await fetch(API_URL);
-        allData = await response.json();
-        document.getElementById("loading").style.display = "none";
-        hitungSummary();
-        tampilData(); 
-    }catch(err){
-        document.getElementById("loading").innerHTML =
-            "Gagal load data";
-        console.log(err);
-    }
-}
+form.addEventListener("submit", async function(event) {
 
-function openDashboard(){
-    document.getElementById("dashboardModal")
-        .style.display = "block";
-    buatGrafik();
-}
+    event.preventDefault();
 
-function closeDashboard(){
-    document.getElementById("dashboardModal")
-        .style.display = "none";
-}
+    /* =========================
+       AMBIL USERNAME
+       ========================= */
 
-let barChartObj = null;
-let pieTemuanObj = null;
-let piePerbaikanObj = null;
+    const username =
+        document
+        .getElementById("username")
+        .value
+        .trim()
+        .toUpperCase();
 
-function buatGrafik(){
-    // destroy chart lama
-    if(barChartObj) barChartObj.destroy();
-    if(pieTemuanObj) pieTemuanObj.destroy();
-    if(piePerbaikanObj) piePerbaikanObj.destroy();
-    const units = {};
-    allData.forEach(item => {
-        if(!units[item.unit]){
-            units[item.unit] = {
-                temuan:0,
-                perbaikan:0
-            };
-        }
-        const jumlah =
-            parseFloat(item.jumlah) || 0;
-        if(item.progres == "T"){
-            units[item.unit].temuan += jumlah;
-        }
-        if(item.progres == "P"){
-            units[item.unit].perbaikan += jumlah;
-        }
-    });
-    // sorting
-    const sorted =
-        Object.entries(units)
-        .sort((a,b)=>
-            b[1].temuan - a[1].temuan
+
+    /* =========================
+       AMBIL PASSWORD
+       ========================= */
+
+    const password =
+        document
+        .getElementById("passwordField")
+        .value
+        .trim()
+        .toUpperCase();
+
+
+    /* =========================
+       BUTTON
+       ========================= */
+
+    const button =
+        document.getElementById(
+            "kt_sign_in_submit"
         );
-    const labels =
-        sorted.map(x=>x[0]);
-    const temuan =
-        sorted.map(x=>x[1].temuan);
-    const perbaikan =
-        sorted.map(x=>x[1].perbaikan);
-    // warna kontras
-    const colors = [
-        "#e53935",
-        "#8e24aa",
-        "#3949ab",
-        "#1e88e5",
-        "#00897b",
-        "#43a047",
-        "#fdd835",
-        "#fb8c00",
-        "#6d4c41",
-        "#546e7a",
-        "#d81b60",
-        "#5e35b1"
-    ];
-
-    // =========================
-    // BAR CHART
-    // =========================
-
-    barChartObj = new Chart(
-        document.getElementById("barChart"),
-        {
-            type:"bar",
-            data:{
-                labels:labels,
-                datasets:[
-                    {
-                        label:"Temuan",
-                        data:temuan
-                    },
-                    {
-                        label:"Perbaikan",
-                        data:perbaikan
-                    }
-                ]
-            },
-            options:{
-                layout:{
-                    padding:{
-                    top:10,
-                    bottom:10,
-                    left:10,
-                    right:10
-                    }
-                },
-                responsive:true,
-                maintainAspectRatio:false,
-                plugins:{
-                    title:{
-                       display:true,
-                        text:"GRAFIK TEMUAN & PERBAIKAN",
-                        font:{
-                            size:22,
-                            weight:"bold"
-                         },
-                        padding:{
-                            top:10,
-                            bottom:20
-                        },
-                        color:"#1565c0"
-                    }                
-                }
-            }
-        }
-    );
-
-    // =========================
-    // PIE TEMUAN
-    // =========================
-
-    pieTemuanObj = new Chart(
-        document.getElementById("pieTemuan"),
-        {
-            type:"pie",
-            data:{
-                labels:labels,
-                datasets:[{
-                    data:temuan,
-                    backgroundColor:colors
-                }]
-            },
-            options:{
-                responsive:true,
-                maintainAspectRatio:false,
-                layout:{
-                  padding:10
-                },
-                plugins:{
-                    legend:{
-                        display:false
-                    },
-                    title:{
-                        display:true,
-                        text:"TEMUAN TILIK",
-                        font:{
-                            size:18,
-                            weight:"bold"
-                        },
-                        padding:{
-                            top:10,
-                            bottom:10
-                        },
-                        color:"#1565c0"
-                    }
-                }
-            }
-        }
-    );
-
-    // =========================
-    // PIE PERBAIKAN
-    // =========================
-
-    piePerbaikanObj = new Chart(
-        document.getElementById("piePerbaikan"),
-        {
-            type:"pie",
-            data:{
-                labels:labels,
-                datasets:[{
-                    data:perbaikan,
-                    backgroundColor:colors
-                }]
-            },
-            options:{
-                responsive:true,
-                maintainAspectRatio:false,
-                layout:{
-                  padding:10
-                },
-                plugins:{
-                    legend:{
-                        display:false
-                    },
-                    title:{
-                        display:true,
-                        text:"PROGRES PERBAIKAN",
-                        position:"bottom",
-                        font:{
-                            size:18,
-                            weight:"bold"
-                        },
-                        padding:{
-                            top:10,
-                            bottom:10
-                        },
-                        color:"#1565c0"
-                    }
-                }
-            }
-        }
-    );
-
-    // =========================
-    // LEGENDA TENGAH
-    // =========================
-
-    let legendHTML = "";
-    labels.forEach((lbl,i)=>{
-        legendHTML += `
-            <div style="
-                display:inline-block;
-                margin:4px 10px;
-            ">
-                <span style="
-                    display:inline-block;
-                    width:14px;
-                    height:14px;
-                    background:${colors[i % colors.length]};
-                    margin-right:5px;
-                    border-radius:3px;
-                "></span>
-                ${lbl}
-            </div>
-        `;
-    });
-    document.getElementById("legendContainer")
-        .innerHTML = legendHTML;
-}
-
-async function downloadDashboardPDF(){
-    const { jsPDF } = window.jspdf;
-    const dashboard =
-        document.querySelector(".dashboard-content");
-    // capture dashboard
-    dashboard.style.height = "auto";
-    const canvas =
-        await html2canvas(dashboard, {
-            scale:2,
-            useCORS:true,
-            backgroundColor:"#ffffff",
-            windowWidth: dashboard.scrollWidth,
-            windowHeight: dashboard.scrollHeight
-        });
-    const imgData =
-        canvas.toDataURL("image/png");
-    // ukuran canvas
-    const imgWidth = canvas.width;
-    const imgHeight = canvas.height;
-    // buat PDF landscape
-    const pdf =
-        new jsPDF({
-            orientation:"landscape",
-            unit:"mm",
-            format:"a4"
-        });
-    // ukuran halaman pdf
-    const pageWidth =
-        pdf.internal.pageSize.getWidth();
-    const pageHeight =
-        pdf.internal.pageSize.getHeight();
-    // margin
-    const margin = 5;
-    // area tersedia
-    const availableWidth =
-        pageWidth - (margin * 2);
-    const availableHeight =
-        pageHeight - (margin * 2);
-    // hitung rasio
-    const ratio =
-        Math.min(
-            availableWidth / imgWidth,
-            availableHeight / imgHeight
+    const label =
+        button.querySelector(
+            ".btn-login"
         );
-    // ukuran final
-    const finalWidth =
-        imgWidth * ratio;
-    const finalHeight =
-        imgHeight * ratio;
-    // posisi center
-    const x =
-        (pageWidth - finalWidth) / 2;
-    const y =
-        (pageHeight - finalHeight) / 2;
-    // masukkan gambar
-    pdf.addImage(
-        imgData,
-        "PNG",
-        x,
-        y,
-        finalWidth,
-        finalHeight
-    );
-    // download
-    pdf.save("Dashboard_Tilik.pdf");
-    dashboard.style.height = "96vh";
-}
+    const wait =
+        button.querySelector(
+            ".wait-login"
+        );
 
+    /* =========================
+       VALIDASI USERNAME
+       ========================= */
 
-function formatTanggal(tgl){
-    if(!tgl) return "";
-    tgl = tgl.toString();
-    // pastikan 8 digit
-    if(tgl.length != 8) return tgl;
-    const tahun = tgl.substring(0,4);
-    const bulan = tgl.substring(4,6);
-    const hari = tgl.substring(6,8);
-    return hari + "-" + bulan + "-" + tahun;
-}
-
-function hitungSummary(){
-    // jumlah periode unik berdasarkan tanggal
-    const uniqueTanggal =
-        [...new Set(allData.map(x => x.tanggal))];
-    const totalPeriode =
-        uniqueTanggal.length;
-    // total temuan
-    const totalTemuan =
-        allData
-        .filter(x => x.progres == "T")
-        .reduce((a,b) =>
-            a + (parseFloat(b.jumlah) || 0), 0);
-    // total perbaikan
-    const totalPerbaikan =
-        allData
-        .filter(x => x.progres == "P")
-        .reduce((a,b) =>
-            a + (parseFloat(b.jumlah) || 0), 0);
-    // progress %
-    let progress = 0;
-    if(totalTemuan > 0){
-        progress =
-            (
-                totalPerbaikan /
-                totalTemuan
-            ) * 100;
-    }
-    document.getElementById("totalPeriode")
-        .innerText = totalPeriode;
-    document.getElementById("totalTemuan")
-        .innerText = totalTemuan;
-    document.getElementById("totalPerbaikan")
-        .innerText = totalPerbaikan;
-    document.getElementById("totalProgress")
-        .innerText =
-            progress.toFixed(0) + "%";
-}
-
-function showPDF(fileId){
-    // LINK PREVIEW
-    const previewLink =
-        "https://drive.google.com/file/d/" +
-        fileId +
-        "/preview";
-    // LINK DOWNLOAD
-    const downloadLink =
-        "https://drive.google.com/uc?export=download&id=" +
-        fileId;
-    // tampilkan modal
-    document.getElementById("pdfModal")
-        .style.display = "block";
-    // tampilkan preview
-    document.getElementById("pdfFrame")
-        .src = previewLink;
-    // tombol download
-    document.getElementById("downloadBtn")
-        .onclick = function(){
-            window.open(downloadLink, "_blank");
-        };
-}
-
-function closePDF(){
-    document.getElementById("pdfModal")
-        .style.display = "none";
-    document.getElementById("pdfFrame")
-        .src = "";
-}
-
-function tampilData(){
-    const list =
-        document.getElementById("listData");
-    list.innerHTML = "";
-    // ambil data progres T
-    const dataT =
-        allData.filter(x => x.progres == "T");
-    if(dataT.length == 0){
-        list.innerHTML =
-            "<tr><td colspan='8'>Tidak ada data</td></tr>";
+    if (!username) {
+        Swal.fire({
+            icon: "warning",
+            title: "Perhatian",
+            text: "Username harus diisi",
+            confirmButtonText: "OK"
+        });
         return;
     }
 
-    dataT.forEach(t => {
 
-        // cari pasangan P
-        const p =
-            allData.find(x =>
-                x.progres == "P" &&
-                x.tanggal == t.tanggal &&
-                x.unit == t.unit
+    /* =========================
+       VALIDASI PASSWORD
+       ========================= */
+
+    if (!password) {
+        Swal.fire({
+            icon: "warning",
+            title: "Perhatian",
+            text: "Password harus diisi",
+            confirmButtonText: "OK"
+        });
+        return;
+    }
+
+
+    /* =========================
+       TAMPILKAN LOADING
+       ========================= */
+
+    label.style.display = "none";
+    wait.style.display = "inline-block";
+    button.disabled = true;
+
+
+    try {
+
+        /* =========================
+           BUAT URL LOGIN
+           ========================= */
+
+        const url =
+            LOGIN_API +
+            "?action=login" +
+            "&username=" +
+            encodeURIComponent(username) +
+            "&password=" +
+            encodeURIComponent(password);
+        console.log(
+            "LOGIN URL:",
+            url
+        );
+
+        /* =========================
+           HUBUNGI APPS SCRIPT
+           ========================= */
+
+        const response =
+            await fetch(url, {
+                method: "GET",
+                cache: "no-cache"
+            });
+        console.log(
+            "HTTP STATUS:",
+            response.status
+        );
+
+        /* =========================
+           CEK RESPONSE
+           ========================= */
+
+        if (!response.ok) {
+            throw new Error(
+                "HTTP " +
+                response.status
             );
-        let jumlahT =
-            parseFloat(t.jumlah) || 0;
-        let jumlahP = 0;
-        let progres = "0%";
-        if(p){
-            jumlahP =
-                parseFloat(p.jumlah) || 0;
-            if(jumlahT > 0){
-                progres =
-                    (
-                        (jumlahP / jumlahT) * 100
-                    ).toFixed(0) + "%";
-            }
         }
 
-        // PDF TEMUAN
-        let pdfT = t.link;
-        if(!pdfT || pdfT == ""){
-            pdfT =
-                "https://drive.google.com/file/d/" +
-                t.fileId +
-                "/preview";
+        /* =========================
+           BACA JSON
+           ========================= */
+
+        const result =
+            await response.json();
+        console.log(
+            "LOGIN RESULT:",
+            result
+        );
+
+        /* =========================
+           LOGIN BERHASIL
+           ========================= */
+
+        if (
+            result.status ===
+            "success"
+        ) {
+
+            /* =====================
+               SIMPAN SESSION
+               ===================== */
+
+            sessionStorage.setItem(
+                "login",
+                "true"
+            );
+            sessionStorage.setItem(
+                "username",
+                result.username
+            );
+            sessionStorage.setItem(
+                "loginDate",
+                result.loginDate || ""
+            );
+
+            /* =====================
+               PESAN BERHASIL
+               ===================== */
+
+            await Swal.fire({
+                icon: "success",
+                title:
+                    "Login Berhasil",
+                text:
+                    "Selamat datang " +
+                    result.username,
+                timer: 1200,
+                showConfirmButton:
+                    false
+            });
+
+            /* =====================
+               PINDAH HALAMAN
+               ===================== */
+
+            location.href =
+                "mainmenu.html";
         }
 
-        // PDF PERBAIKAN
-        let pdfP = "";
+        /* =========================
+           LOGIN GAGAL
+           ========================= */
 
-        if(p){
-            pdfP = p.link;
-            if(!pdfP || pdfP == ""){
-                pdfP =
-                    "https://drive.google.com/file/d/" +
-                    p.fileId +
-                    "/preview";
-            }
-
+        else {
+            Swal.fire({
+                icon: "error",
+                title:
+                    "Login Gagal",
+                text:
+                    result.message ||
+                    "Username atau password salah",
+                confirmButtonText:
+                    "OK"
+            });
         }
+    }
 
-        const tr =
-            document.createElement("tr");
+    /* =========================
+       ERROR KONEKSI / JAVASCRIPT
+       ========================= */
 
-        tr.innerHTML = `
-        <tr>
-            <td align="center">
-                ${formatTanggal(t.tanggal)}
-            </td>
-            <td> 
-              ${t.unit}
-            </td>
-            <td> 
-              ${t.pimpinan}
-            </td>
-            <td align="center">
-               ${jumlahT}
-            </td>
-            <td align="center">
-               ${p ? formatTanggal(p.tanggalv) : "-"}
-            </td>
-            <td>
-               ${p ? p.namav : "-"}
-            </td>
-            <td align="center">
-              ${jumlahP}
-            </td>
-            <td align="center">
-              ${progres}
-            </td>
-            <td class="lampiran-cell">
+    catch(err) {
+        console.error(
+            "ERROR LOGIN:",
+            err
+        );
+        Swal.fire({
+            icon: "error",
+            title:
+                "Koneksi Gagal",
+            text:
+                "Tidak dapat menghubungi server login.",
+            footer:
+                "<small>" +
+                err.message +
+                "</small>",
+            confirmButtonText:
+                "OK"
+        });
+    }
 
-            <!-- PDF TEMUAN -->
-            <span class="pdf-icon"
-              title="Temuan"
-              onclick="showPDF('${t.fileId}')">
-              🔍
-            </span>
+    /* =========================
+       KEMBALIKAN BUTTON
+       ========================= */
 
-            <!-- PDF PERBAIKAN -->
-            ${p ? `
-            <span class="pdf-icon"
-                  title="Perbaikan"
-                  onclick="showPDF('${p.fileId}')">
-                  ✅
-            </span>
-          ` : `
-            <span class="pdf-placeholder"></span>
-          `}
-           </td>
-        </tr>
-        `;
-        list.appendChild(tr);
-    });
+    label.style.display =
+        "inline-block";
+    wait.style.display =
+        "none";
+    button.disabled =
+        false;
+});
 
+
+/* =====================================
+   TOGGLE PASSWORD
+   ===================================== */
+
+function togglePassword() {
+    const field =
+        document.getElementById(
+            "passwordField"
+        );
+    const icon =
+        document.getElementById(
+            "eyeIcon"
+        );
+    if (
+        field.type ===
+        "password"
+    ) {
+        field.type =
+            "text";
+        icon.classList.remove(
+            "fa-eye"
+        );
+        icon.classList.add(
+            "fa-eye-slash"
+        );
+    }
+    else {
+        field.type =
+            "password";
+        icon.classList.remove(
+            "fa-eye-slash"
+        );
+        icon.classList.add(
+            "fa-eye"
+        );
+    }
 }
-
-
-loadData();
-
 </script>
+    <script>
+        AOS.init();
+    </script>
 
-<div id="pdfModal" class="modal">
-    <div class="modal-content">
-        <span class="close"
-              onclick="closePDF()">
-              &times;
-        </span>
-        <button id="downloadBtn"
-                class="download-btn">
-            Download PDF
-        </button>
-        <iframe id="pdfFrame"></iframe>
-    </div>
-</div>
-
-<div id="dashboardModal" class="modal">
-    <div class="dashboard-content">
-        <span class="close"
-              onclick="closeDashboard()">
-              &times;
-        </span>
-        <button class="download-dashboard-btn"
-                onclick="downloadDashboardPDF()">
-                DOWNLOAD PDF
-        </button>
-        <div class="dashboard-grid">
-            <!-- kiri -->
-            <div class="chart-box">
-                <canvas id="barChart"></canvas>
-            </div>
-            <!-- kanan -->
-            <div class="pie-container">
-                <!-- pie atas -->
-                <div class="chart-box">
-                    <canvas id="pieTemuan"></canvas>
-                </div>
-                <!-- legenda -->
-                <div class="legend-box"
-                     id="legendContainer">
-                </div>
-                <!-- pie bawah -->
-                <div class="chart-box">
-                    <canvas id="piePerbaikan"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 </body>
+
 </html>
