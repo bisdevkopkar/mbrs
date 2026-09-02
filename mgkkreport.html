@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Manajemen Gugus Kendali Kinerja - Ver.1.2</title>
+
+<style>
+
+
+.card{
+    background:white;
+    border-radius:10px;
+    padding:20px;
+    flex:1 1 450px;
+    max-width:600px;
+    min-width:300px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+@media print {
+    body{
+        zoom:90%;
+    }
+    .dashboard-container{
+        width:100%;
+    }
+    .card{
+        break-inside:avoid;
+    }
+}
+
+
+.pdf-header{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:15px;
+}
+
+.pdf-logo{
+    width:50px;
+    height:50px;
+    object-fit:contain;
+    margin-bottom:10px;
+}
+
+#pdfHeader{
+    display:none;
+}
+
+.pdf-title{
+    text-align:center;
+    color:#1565c0;
+    font-weight:bold;
+    line-height:1.5;
+}
+
+.pdf-title div:first-child{
+    font-size:16px;
+}
+
+.pdf-title div:last-child{
+    font-size:16px;
+}
+
+canvas{
+    width:100% !important;
+    height:auto !important;
+}
+
+.right{
+    text-align:right;
+}
+
+.pdf-icon{
+    font-size:22px;
+    cursor:pointer;
+}
+
+.button-group{
+    display:flex;
+    gap:10px;
+}    
+
+.dashboard-container{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;   /* rata tengah */
+    gap:20px;
+    max-width:1400px;
+    margin:auto;
+}
+
+.dashboard-content{
+    position:relative;
+    width:99vw;
+    height:92vh;
+    margin:1vh auto;
+    background:white;
+    border-radius:10px;
+    padding:8px;
+    overflow:hidden;
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:60% 40%;
+    gap:8px;
+    width:100%;
+    height:calc(100% - 40px);
+}
+
+.summary-box{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    align-items:center;
+    font-weight:bold;
+    color:#1565c0;
+}
+
+.chart-box canvas{
+    max-height:100% !important;
+}
+
+#barChart{
+    height:100% !important;
+}
+
+.chart-box{
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+.pie-container{
+    display:grid;
+    grid-template-rows:40% auto 40%;
+    gap:5px;
+    height:100%;
+    align-items:center;
+}
+
+.legend-box{
+    text-align:center;
+    font-size:11px;
+    font-weight:bold;
+    color:#444;
+}
+
+.unit-dashboard-content{
+    position:relative;
+    width:92vw;
+    height:84vh;
+    margin:2vh auto;
+    background:white;
+    border-radius:10px;
+    padding:15px;
+    overflow:hidden;
+}
+
+.unit-dashboard-grid{
+    display:grid;
+    grid-template-columns:55% 45%;
+    gap:10px;
+    width:100%;
+    height:100%;
+}
+
+canvas{
+    width:100% !important;
+    height:100% !important;
+}
+
+.download-dashboard-btn{
+    position:absolute;
+    top:10px;
+    right:70px;
+    z-index:1000;
+    background:#2e7d32;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+ .download-btn{
+    position:absolute;
+    top:10px;
+    right:60px;
+    z-index:1000;
+    background:#1565c0;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:bold;
+}   
+
+.modal{
+    display:none;
+    position:fixed;
+    z-index:999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+}
+
+.modal-content{
+    position:relative;
+    width:90%;
+    height:90%;
+    margin:2% auto;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.close{
+    position:absolute;
+    right:15px;
+    top:10px;
+    font-size:30px;
+    cursor:pointer;
+    z-index:1000;
+    color:red;
+    font-weight:bold;
+}
+
+#pdfFrame{
+    width:100%;
+    height:100%;
+    border:none;
+}    
+
+.table-container{
+    padding:15px;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#1565c0;
+    color:white;
+    padding:12px;
+    text-align:left;
+}
+
+td{
+    padding:8px 10px;
+}
+
+tbody tr{
+    transition:0.2s;
+}
+
+/* baris ganjil */
+tbody tr:nth-child(odd){
+    background:white;
+}
+
+/* baris genap */
+tbody tr:nth-child(even){
+    background:#eaf3ff;
+}
+
+/* hover */
+tbody tr:hover{
+    background:#d6e9ff;
+}
+
+th{
+    background:#1565c0;
+    color:white;
+    padding:10px;
+    text-align:left;
+    white-space:nowrap;
+}
+
+.lampiran-cell{
+    white-space:nowrap;
+}
+
+.pdf-icon{
+    cursor:pointer;
+    font-size:22px;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f0f2f5;
+}
+
+.header{
+    background:#1565c0;
+    color:white;
+    padding:15px;
+    font-size:24px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.toolbar{
+    background:white;
+    padding:10px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 2px 5px rgba(0,0,0,0.15);
+}
+
+button{
+    background:#1976d2;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#0d47a1;
+}
+
+.container{
+    padding:15px;
+}
+
+iframe{
+    width:100%;
+    height:500px;
+    border:none;
+    margin-top:10px;
+    border-radius:8px;
+}
+
+.loading{
+    text-align:center;
+    padding:20px;
+    font-size:18px;
+}
+
+.center{
+    text-align:center;
+}
+
+.icon-slot{
+    display:inline-block;
+    width:28px;
+    text-align:center;
+}
+
+.loading{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:white;
+    z-index:9999;
+}
+
+.spinner{
+    width:60px;
+    height:60px;
+    border:6px solid #ddd;
+    border-top:6px solid #1565c0;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+.loading-text{
+    margin-top:15px;
+    font-size:18px;
+    font-weight:bold;
+    color:#1565c0;
+    text-align:center;
+}
+
+@keyframes spin{
+    0%{
+        transform:rotate(0deg);
+    }
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
+.page-wrapper{
+    width:max-content;
+    min-width:100%;
+}
+
+.table-container{
+    overflow-x:auto;
+}
+
+.dashboard-mgkk-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(4,1fr);
+    gap:10px;
+}
+
+
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script>Chart.register(ChartDataLabels);
+</script>
+<script>
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</head>
+
+<body>
+
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+            <div class="loading-text">
+            Loading Data Manajemen Gugus Kendali Kinerja...
+        </div>
+    </div>
+    <div class="header">
+        MANAJEMEN GUGUS KENDALI KINERJA
+    </div>
+    <div class="toolbar">
+        <button onclick="openDashboard()">
+            DASHBOARD
+        </button>
+    </div>
+<div class="table-container">
+    <table>
+    <thead>
+    <tr>
+        <th class="center"> No Register </th>
+        <th class="center"> Tanggal Daftar </th>
+        <th class="center"> Pembuat </th>
+        <th class="center"> Unit </th>
+        <th class="center"> Tujuan </th>
+        <th class="center"> Pimpinan </th>
+        <th class="center"> Tanggal Selesai </th>
+        <th> Laporan </th>
+    </tr>
+    </thead>
+    <tbody id="listData"></tbody>
+    </table>
+</div>
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzWTUC-WJyGlGAcmOd_ZCqR-DOVIP-1rrNN-PbSHfcI-tHIt7Wjm8fRTufXsgIIpvl_og/exec";
+let allData = [];
+let filteredData = [];
+
+
+
+function openForm(url){
+    window.open(url, "_blank");
+}
+
+
+
+async function loadData(){
+    try{
+        const response = await fetch(API_URL);
+        allData = await response.json();
+        console.log("Jumlah Data :", allData.length);
+        console.log("Data Pertama :", allData[0]);
+        document.getElementById("loading")
+            .style.display = "none";
+        tampilData();
+        buatGrafik();
+    }
+    catch(err){
+        document.getElementById("loading")
+            .innerHTML =
+            "Gagal load data";
+        console.log(err);
+    }
+}
+
+//let mgkkCharts = [];
+
+function openDashboard(){
+    document.getElementById(
+        "dashboardModal"
+    ).style.display = "block";
+    buatGrafik();
+}
+
+function closeDashboard(){
+    document.getElementById(
+        "dashboardModal"
+    ).style.display = "none";
+}
+
+function toggleGrafik(cb){
+    if(cb.value=="all" && cb.checked){
+        document
+        .querySelectorAll(
+            '.toolbar input[type=checkbox]'
+        )
+        .forEach(x=>{
+            x.checked = false;
+        });
+        cb.checked = true;
+    }else{
+        document.querySelector(
+            'input[value=all]'
+        ).checked = false;
+    }
+}
+
+
+//------------------------------------------------------------
+
+let barChartObj = null;
+let pieJenisObj = null;
+let pieStatusObj = null;
+
+function buatGrafik(){
+
+    // Hapus chart lama
+    if(barChartObj) barChartObj.destroy();
+    if(pieJenisObj) pieJenisObj.destroy();
+    if(pieStatusObj) pieStatusObj.destroy();
+    const unitData = {};
+    const jenisData = {
+        S:0,
+        T:0,
+        M:0,
+        G:0,
+        P:0
+    };
+    allData.forEach(item=>{
+        const unit = item.unit || "-";
+        const progres = (item.progres || "").toUpperCase();
+        if(!unitData[unit]){
+            unitData[unit] = {
+                S:0,
+                T:0,
+                M:0,
+                G:0,
+                P:0
+            };
+        }
+        if(unitData[unit][progres] !== undefined){
+            unitData[unit][progres]++;
+            jenisData[progres]++;
+        }
+    });
+
+    // Urutkan berdasarkan total data terbesar
+
+    const sortedUnits =
+        Object.entries(unitData)
+        .sort((a,b)=>{
+            const totalA =
+                a[1].S +
+                a[1].T +
+                a[1].M +
+                a[1].G +
+                a[1].P;
+            const totalB =
+                b[1].S +
+                b[1].T +
+                b[1].M +
+                b[1].G +
+                b[1].P;
+            return totalB - totalA;
+        });
+    const labels = sortedUnits.map(x=>x[0]);
+    const dataS = sortedUnits.map(x=>x[1].S);
+    const dataT = sortedUnits.map(x=>x[1].T);
+    const dataM = sortedUnits.map(x=>x[1].M);
+    const dataG = sortedUnits.map(x=>x[1].G);
+    const dataP = sortedUnits.map(x=>x[1].P);
+
+    // =====================================
+    // BAR CHART
+    // =====================================
+
+    barChartObj = new Chart(
+        document.getElementById("barChart"),
+        {
+            type:"bar",
+            data:{
+                labels:labels,
+            datasets:[
+                {
+                    label:"SSI",
+                    data:dataS,
+                    backgroundColor:"#fbc02d",
+                    borderColor:"#fbc02d",
+                    options:{
+                        responsive:true,
+                        maintainAspectRatio:false,
+                        datasets:{
+                            bar:{
+                                barPercentage:0.8,
+                                categoryPercentage:0.7
+                            }
+                        }
+                    },
+                    plugins:[ChartDataLabels]
+                },
+                {
+                    label:"TPL",
+                    data:dataT,
+                    backgroundColor:"#43a047",
+                    borderColor:"#43a047",
+                    options:{
+                        responsive:true,
+                        maintainAspectRatio:false,
+                        datasets:{
+                            bar:{
+                                barPercentage:0.8,
+                                categoryPercentage:0.7
+                            }
+                        }
+                    },
+                    plugins:[ChartDataLabels]
+                },
+                {
+                    label:"GKM",
+                    data:dataM,
+                    backgroundColor:"#1e88e5",
+                    borderColor:"#1e88e5",
+                    options:{
+                        responsive:true,
+                        maintainAspectRatio:false,
+                        datasets:{
+                            bar:{
+                                barPercentage:0.8,
+                                categoryPercentage:0.7
+                            }
+                        }
+                    },
+                    plugins:[ChartDataLabels]
+                },
+                {
+                    label:"GKP",
+                    data:dataG,
+                    backgroundColor:"#8e24aa",
+                    borderColor:"#8e24aa",
+                    options:{
+                        responsive:true,
+                        maintainAspectRatio:false,
+                        datasets:{
+                            bar:{
+                                barPercentage:0.8,
+                                categoryPercentage:0.7
+                            }
+                        }
+                    },
+                    plugins:[ChartDataLabels]
+                },
+                {
+                    label:"Selesai",
+                    data:dataP,
+                    backgroundColor:"#e53935",
+                    borderColor:"#e53935",
+                    options:{
+                        responsive:true,
+                        maintainAspectRatio:false,
+                        datasets:{
+                            bar:{
+                                barPercentage:0.8,
+                                categoryPercentage:0.7
+                            }
+                        }
+                    },
+                    plugins:[ChartDataLabels]
+                }
+            ]
+            },
+            options:{
+                responsive:true,
+                maintainAspectRatio:false,
+                layout:{
+                    padding:{
+                        top:10,
+                        bottom:30,
+                        left:10,
+                        right:10
+                    }
+                },
+                plugins:{
+                    title:{
+                        display:true,
+                        text:"GRAFIK PROGRES MGKK PER UNIT",
+                        font:{size:18,weight:"bold"},
+                        color:"#1565c0"
+                    },
+                    legend:{
+                        position:"bottom"
+                    },
+                    datalabels:{
+                        anchor:"end",
+                        align:"top",
+                        color:"#000",
+                        font:{weight:"bold",size:11},
+                        formatter:function(value){return value > 0 ? value : "";
+                        }
+                    }
+                },
+                scales:{
+                    x:{
+                        stacked:false,
+                        ticks:{
+                            maxRotation:45,
+                            minRotation:45,
+                            font:{
+                                size:10
+                            }
+                        }
+                    },
+                    y:{
+                        stacked:false,
+                        beginAtZero:true,
+                        grace:'20%'
+                    }
+                }
+            }
+        }
+    );
+
+    // =====================================
+    // PIE CHART KOMPOSISI MGKK
+    // =====================================
+
+    pieJenisObj = new Chart(
+        document.getElementById("pieTemuan"),
+        {
+            type:"pie",
+            data:{
+                labels:[
+                    "SSI",
+                    "TPL",
+                    "GKM",
+                    "GKP"
+                ],
+                datasets:[{
+                    data:[
+                        jenisData.S,
+                        jenisData.T,
+                        jenisData.M,
+                        jenisData.G
+                    ],
+                    backgroundColor:[
+                        "#1E88E5",
+                        "#FB8C00",
+                        "#43A047",
+                        "#8E24AA"
+                    ]
+                }]
+            },
+            options:{
+                responsive:true,
+                maintainAspectRatio:false,
+                plugins:{
+                    title:{
+                        display:true,
+                        text:"KOMPOSISI MGKK",
+                        font:{
+                            size:18,
+                            weight:"bold"
+                        },
+                        color:"#1565c0"
+                    },
+                    legend:{
+                        position:"bottom"
+                    }
+                }
+            }
+        }
+    );
+
+    // =====================================
+    // PIE CHART STATUS PENYELESAIAN
+    // =====================================
+
+    const belumSelesai =
+        jenisData.S +
+        jenisData.T +
+        jenisData.M +
+        jenisData.G;
+    pieStatusObj = new Chart(
+        document.getElementById("piePerbaikan"),
+        {
+            type:"pie",
+            data:{
+                labels:[
+                    "Belum Selesai",
+                    "Selesai"
+                ],
+                datasets:[{
+                    data:[
+                        belumSelesai,
+                        jenisData.P
+                    ],
+                    backgroundColor:[
+                        "#FB8C00",
+                        "#43A047"
+                    ]
+                }]
+            },
+            options:{
+                responsive:true,
+                maintainAspectRatio:false,
+                plugins:{
+                    title:{
+                        display:true,
+                        text:"STATUS PROGRES",
+                        font:{
+                            size:18,
+                            weight:"bold"
+                        },
+                        color:"#1565c0"
+                    },
+                    legend:{
+                        position:"bottom"
+                    }
+                }
+            }
+        }
+    );
+
+    // =====================================
+    // LEGENDA
+    // =====================================
+
+    document.getElementById(
+        "legendContainer"
+    ).innerHTML = `
+        <div style="display:inline-block;margin:4px 10px;">
+            <b>S</b> = SSI
+        </div>
+        <div style="display:inline-block;margin:4px 10px;">
+            <b>T</b> = TPL
+        </div>
+        <div style="display:inline-block;margin:4px 10px;">
+            <b>M</b> = GKM
+        </div>
+        <div style="display:inline-block;margin:4px 10px;">
+            <b>G</b> = GKP
+        </div>
+        <div style="display:inline-block;margin:4px 10px;">
+            <b>P</b> = Selesai
+        </div>
+    `;
+}
+
+
+//-----------------------------------------------------------
+
+
+
+function tambahDataset(
+    datasets,
+    label,
+    field
+){
+    datasets.push({
+        label:label,
+        data:
+            allData.map(x=>
+                parseFloat(
+                    x[field]
+                    .toString()
+                    .replace(/\./g,"")
+                    .replace(",",".")
+                ) || 0
+            )
+    });
+}
+
+async function downloadDashboardMGKKPDF(){
+    const { jsPDF } = window.jspdf;
+    const dashboard =
+        document.querySelector(
+            ".dashboard-content"
+        );
+    const btn =
+        dashboard.querySelector(
+            ".download-dashboard-btn"
+        );
+    const closeBtn =
+        dashboard.querySelector(
+            ".close"
+        );
+    const header =
+        document.getElementById(
+            "pdfHeader"
+        );
+    // sembunyikan tombol
+    btn.style.display = "none";
+    closeBtn.style.display = "none";
+
+    // tampilkan header pdf
+    header.style.display = "flex";
+
+    // ubah height auto supaya semua isi masuk
+    const oldHeight =
+        dashboard.style.height;
+    dashboard.style.height = "auto";
+
+    // tunggu render
+    await new Promise(r =>
+        setTimeout(r, 500)
+    );
+
+    // capture full dashboard
+    const canvas =
+        await html2canvas(
+            dashboard,
+            {
+                scale:2,
+                useCORS:true,
+                backgroundColor:"#ffffff",
+                windowWidth:
+                    dashboard.scrollWidth,
+                windowHeight:
+                    dashboard.scrollHeight
+            }
+        );
+    const imgData =
+        canvas.toDataURL(
+            "image/png"
+        );
+
+    // buat pdf landscape
+    const pdf =
+        new jsPDF({
+            orientation:"landscape",
+            unit:"mm",
+            format:"a4"
+        });
+
+    // ukuran halaman
+    const pageWidth =
+        pdf.internal.pageSize.getWidth();
+    const pageHeight =
+        pdf.internal.pageSize.getHeight();
+
+    // margin
+    const margin = 5;
+    const availableWidth =
+        pageWidth - (margin * 2);
+    const availableHeight =
+        pageHeight - (margin * 2);
+
+    // scaling proporsional
+    const ratio =
+        Math.min(
+            availableWidth / canvas.width,
+            availableHeight / canvas.height
+        );
+    const finalWidth =
+        canvas.width * ratio;
+    const finalHeight =
+        canvas.height * ratio;
+
+    // posisi center
+    const x =
+        (pageWidth - finalWidth) / 2;
+    const y =
+        (pageHeight - finalHeight) / 2;
+
+    // gambar
+    pdf.addImage(
+        imgData,
+        "PNG",
+        x,
+        y,
+        finalWidth,
+        finalHeight
+    );
+
+    // save
+    pdf.save(
+        "Dashboard_MGKK.pdf"
+    );
+
+    // restore
+    dashboard.style.height =
+        oldHeight;
+    header.style.display = "none";
+    btn.style.display = "block";
+    closeBtn.style.display = "block";
+}
+
+
+async function downloadDashboardPDF(){
+    const { jsPDF } = window.jspdf;
+    const dashboard =
+        document.querySelector(".dashboard-content");
+    const btn =
+        dashboard.querySelector(
+        ".download-dashboard-btn"
+        );
+        btn.style.display = "none";
+    const closeBtn =
+        dashboard.querySelector(
+            ".close"
+        );
+        closeBtn.style.display = "none";
+    // capture dashboard
+    dashboard.style.height = "auto";
+    const canvas =
+        await html2canvas(dashboard, {
+            scale:2,
+            useCORS:true,
+            backgroundColor:"#ffffff",
+            windowWidth: dashboard.scrollWidth,
+            windowHeight: dashboard.scrollHeight
+        });
+    const imgData =
+        canvas.toDataURL("image/png");
+    // ukuran canvas
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+    // buat PDF landscape
+    const pdf =
+        new jsPDF({
+            orientation:"landscape",
+            unit:"mm",
+            format:"a4"
+        });
+    // ukuran halaman pdf
+    const pageWidth =
+        pdf.internal.pageSize.getWidth();
+    const pageHeight =
+        pdf.internal.pageSize.getHeight();
+    // margin
+    const margin = 5;
+    // area tersedia
+    const availableWidth =
+        pageWidth - (margin * 2);
+    const availableHeight =
+        pageHeight - (margin * 2);
+    // hitung rasio
+    const ratio =
+        Math.min(
+            availableWidth / imgWidth,
+            availableHeight / imgHeight
+        );
+    // ukuran final
+    const finalWidth =
+        imgWidth * ratio;
+    const finalHeight =
+        imgHeight * ratio;
+    // posisi center
+    const x =
+        (pageWidth - finalWidth) / 2;
+    const y =
+        (pageHeight - finalHeight) / 2;
+    // masukkan gambar
+    pdf.addImage(
+        imgData,
+        "PNG",
+        x,
+        y,
+        finalWidth,
+        finalHeight
+    );
+    // download
+    pdf.save("Dashboard_Tilik.pdf");
+    dashboard.style.height = "96vh";
+    btn.style.display = "block";
+    closeBtn.style.display = "block";
+}
+
+
+function showPDF(fileId){
+    const previewLink =
+        "https://drive.google.com/file/d/" +
+        fileId +
+        "/preview";
+    document.getElementById(
+        "pdfModal"
+    ).style.display = "block";
+    document.getElementById(
+        "pdfFrame"
+    ).src = previewLink;
+}
+
+function closePDF(){
+    document.getElementById("pdfModal")
+        .style.display = "none";
+    document.getElementById("pdfFrame")
+        .src = "";
+}
+
+
+function tampilData(){
+    const list =
+        document.getElementById("listData");
+    list.innerHTML = "";
+    // urut tanggal terbaru
+    allData.sort((a,b)=>
+        parseInt(b.register) -
+        parseInt(a.register)
+    );
+    allData.forEach(x=>{
+        const tr =
+            document.createElement("tr");
+        tr.innerHTML = `
+        <td align="center">
+            ${x.register || ""}
+        </td>
+        <td align="center">
+            ${formatTanggal(x.tanggal)}
+        </td>
+        <td align="left">
+            ${x.nama}
+        </td>
+        <td align="left">
+            ${x.unit}
+        </td>
+        <td align="left">
+            ${x.tujuan}
+        </td>
+        <td align="left">
+            ${x.pimpinan}
+        </td>
+        <td align="center">
+            ${formatTanggal(x.tanggalv)}
+        <td align="left">
+            <span class="pdf-icon"
+                onclick="showPDF('${x.fileId}')"
+                title="Lihat PDF">
+                📄
+            </span>
+            ${
+                x.progres === "P"
+                ? `<span class="pdf-icon"
+                        onclick="showPDF('${x.fileId}')"
+                        title="Sudah Selesai"
+                        style="color:red;margin-left:8px;">
+                        ❌
+                </span>`
+                : ""
+            }
+        </td>
+        `;
+        list.appendChild(tr);
+    });
+}
+
+function formatHasil(nilai){
+    if(nilai == null || nilai == "")
+        return "0,00";
+    return parseFloat(nilai)
+        .toLocaleString(
+            "id-ID",
+            {
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
+            }
+        );
+}
+
+function formatTanggal(tgl){
+    if(!tgl) return "";
+    tgl = tgl.toString();
+    // pastikan 8 digit
+    if(tgl.length != 8) return tgl;
+    const tahun = tgl.substring(0,4);
+    const bulan = tgl.substring(4,6);
+    const hari = tgl.substring(6,8);
+    return hari + "-" + bulan + "-" + tahun;
+}
+
+
+function closeUnitDashboard(){
+    document.getElementById(
+        "unitDashboardModal"
+    ).style.display = "none";
+}
+
+async function downloadUnitDashboardPDF(){
+    const { jsPDF } = window.jspdf;
+    const dashboard =
+        document.querySelector(
+            ".unit-dashboard-content"
+        );
+    const btn =
+        dashboard.querySelector(
+        ".download-dashboard-btn"
+        );
+        btn.style.display = "none";
+    const closeBtn =
+        dashboard.querySelector(
+            ".close"
+        );
+        closeBtn.style.display = "none";
+    dashboard.style.height = "auto";
+    const canvas =
+        await html2canvas(dashboard, {
+            scale:2,
+            useCORS:true,
+            backgroundColor:"#ffffff",
+            windowWidth: dashboard.scrollWidth,
+            windowHeight: dashboard.scrollHeight
+        });
+    const imgData =
+        canvas.toDataURL("image/png");
+    const pdf =
+        new jsPDF({
+            orientation:"landscape",
+            unit:"mm",
+            format:"a4"
+        });
+    const pageWidth =
+        pdf.internal.pageSize.getWidth();
+    const pageHeight =
+        pdf.internal.pageSize.getHeight();
+    const margin = 5;
+    const availableWidth =
+        pageWidth - (margin * 2);
+    const availableHeight =
+        pageHeight - (margin * 2);
+    const ratio =
+        Math.min(
+            availableWidth / canvas.width,
+            availableHeight / canvas.height
+        );
+    const finalWidth =
+        canvas.width * ratio;
+    const finalHeight =
+        canvas.height * ratio;
+    const x =
+        (pageWidth - finalWidth) / 2;
+    const y =
+        (pageHeight - finalHeight) / 2;
+    pdf.addImage(
+        imgData,
+        "PNG",
+        x,
+        y,
+        finalWidth,
+        finalHeight
+    );
+    pdf.save("Dashboard_Unit.pdf");
+    dashboard.style.height = "96vh";
+    btn.style.display = "block";
+    closeBtn.style.display = "block";
+}
+
+loadData();
+
+</script>
+
+<div id="unitDashboardModal" class="modal">
+    <div class="unit-dashboard-content">
+        <span class="close"
+            onclick="closeUnitDashboard()">
+            &times;
+        </span>
+        <button class="download-dashboard-btn"
+            onclick="downloadUnitDashboardPDF()">
+            DOWNLOAD PDF
+        </button>
+        <div class="unit-dashboard-grid">
+            <!-- EBITDA -->
+            <div class="chart-box">
+                <canvas id="chartEbitda"></canvas>
+            </div>
+            <!-- kanan -->
+            <div style="
+                display:grid;
+                grid-template-rows:48% 48%;
+                gap:10px;
+            ">
+                <!-- omzet -->
+                <div class="chart-box">
+                    <canvas id="chartOmzet"></canvas>
+                </div>
+                <!-- KPI -->
+                <div class="chart-box">
+                    <canvas id="chartKPI"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="pdfModal" class="modal">
+    <div class="modal-content">
+        <span class="close"
+              onclick="closePDF()">
+              &times;
+        </span>
+        <button id="downloadBtn"
+                class="download-btn">
+            Download PDF
+        </button>
+        <iframe id="pdfFrame"></iframe>
+    </div>
+</div>
+
+<div id="dashboardModal" class="modal">
+    <div class="dashboard-content">
+        <span class="close"
+            onclick="closeDashboard()">
+            &times;
+        </span>
+        <button class="download-dashboard-btn"
+                onclick="downloadDashboardMGKKPDF()">
+            DOWNLOAD PDF
+        </button>
+        <div id="pdfHeader" class="pdf-header">
+            <img src="logo.png"
+                class="pdf-logo">
+            <div class="pdf-title">
+                <div>
+                    MANAJEMEN GUGUS KENDALI KINERJA
+                </div>
+                <div>
+                    KOPERASI KONSUMEN KARYAWAN TJIWI KIMIA
+                </div>
+            </div>
+        </div>
+        <div id="dashboardCharts"
+            class="dashboard-mgkk-grid">
+        </div>
+        <div class="dashboard-grid">
+            <!-- kiri -->
+            <div class="chart-box">
+                <canvas id="barChart"></canvas>
+            </div>
+            <!-- kanan -->
+            <div class="pie-container">
+                <!-- pie atas -->
+                <div class="chart-box">
+                    <canvas id="pieTemuan"></canvas>
+                </div>
+                <!-- legenda -->
+                <div class="legend-box"
+                     id="legendContainer">
+                </div>
+                <!-- pie bawah -->
+                <div class="chart-box">
+                    <canvas id="piePerbaikan"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

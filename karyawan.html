@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<title>Profil Karyawan Koperasi Konsumen Karyawan Tjiwi Kimia - Ver.1.0</title>
+
+<style>
+
+.summary-box{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    align-items:center;
+    font-weight:bold;
+    color:#1565c0;
+}
+
+.button-group{
+    display:flex;
+    gap:10px;
+}    
+
+ .download-btn{
+    position:absolute;
+    top:10px;
+    right:60px;
+    z-index:1000;
+    background:#1565c0;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:bold;
+}   
+
+.icon-group{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:nowrap;
+    white-space:nowrap;
+}
+
+.icon-group span{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.icon-biodata{
+    background:#e7f1ff;
+    color:#0d6efd;
+}
+
+.icon-foto{
+    background:#e8f5e9;
+    color:#198754;
+}
+
+.icon-ktp{
+    background:#fdeaea;
+    color:#dc3545;
+}
+
+.icon-kk{
+    background:#f3e8ff;
+    color:#6f42c1;
+}
+
+.icon-npwp{
+    background:#fff0dd;
+    color:#fd7e14;
+}
+
+.modal-gambar{
+    display:none;
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.75);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.modal-content-gambar{
+    position:relative;
+    width:85%;
+    height:85%;
+    background:#fff;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.img-container{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    cursor:grab;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.img-container:active{
+    cursor:grabbing;
+}
+
+#imgPreview{
+    max-width:95%;
+    max-height:95%;
+    user-select:none;
+    transform-origin:center center;
+    transition:transform .1s;
+}
+
+.toolbar-gambar{
+    position:absolute;
+    top:10px;
+    left:10px;
+    z-index:10000;
+}
+
+.toolbar button{
+    min-width:60px;
+    height:40px;
+    border:none;
+    border-radius:6px;
+    background:white;
+    color:black;
+    font-size:16px;
+    cursor:pointer;
+    margin-right:5px;
+    font-weight:bold;
+    text-align:center;
+    padding:0 10px;
+}
+
+.close-btn{
+    position:absolute;
+    top:5px;
+    right:15px;
+    font-size:32px;
+    cursor:pointer;
+    z-index:10000;
+}
+
+.toolbar button:hover,
+.toolbar button:focus,
+.toolbar button:active{
+    background:#0d6efd;
+    color:white;
+    outline:none;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    z-index:999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+}
+
+.modal-content{
+    position:relative;
+    width:90%;
+    height:90%;
+    margin:2% auto;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.close{
+    position:absolute;
+    right:15px;
+    top:10px;
+    font-size:30px;
+    cursor:pointer;
+    z-index:1000;
+    color:red;
+    font-weight:bold;
+}
+
+#pdfFrame{
+    width:100%;
+    height:100%;
+    border:none;
+}    
+
+.table-container{
+    padding:15px;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#1565c0;
+    color:white;
+    padding:12px;
+    text-align:left;
+}
+
+td{
+    padding:8px 10px;
+}
+
+tbody tr{
+    transition:0.2s;
+}
+
+/* baris ganjil */
+tbody tr:nth-child(odd){
+    background:white;
+}
+
+/* baris genap */
+tbody tr:nth-child(even){
+    background:#eaf3ff;
+}
+
+/* hover */
+tbody tr:hover{
+    background:#d6e9ff;
+}
+
+th{
+    background:#1565c0;
+    color:white;
+    padding:10px;
+    text-align:left;
+    white-space:nowrap;
+}
+
+.lampiran-cell{
+    white-space:nowrap;
+}
+
+.pdf-icon{
+    cursor:pointer;
+    margin-right:8px;
+    font-size:18px;
+}
+
+.pdf-icon i{
+    pointer-events:none;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f0f2f5;
+}
+
+.header{
+    background:#1565c0;
+    color:white;
+    padding:15px;
+    font-size:24px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.toolbar{
+    background:white;
+    padding:10px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 2px 5px rgba(0,0,0,0.15);
+}
+
+button{
+    background:#1976d2;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#0d47a1;
+}
+
+.container{
+    padding:15px;
+}
+
+iframe{
+    width:100%;
+    height:500px;
+    border:none;
+    margin-top:10px;
+    border-radius:8px;
+}
+
+.loading{
+    text-align:center;
+    padding:20px;
+    font-size:18px;
+}
+
+.center{
+    text-align:center;
+}
+
+.dashboard-content{
+    position:relative;
+    width:92vw;
+    height:86vh;
+    margin:1vh auto;
+    background:white;
+    border-radius:10px;
+    padding:15px;
+    overflow:auto;
+}
+
+#barChart{
+    height:78% !important;
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:60% 40%;
+    gap:8px;
+    width:100%;
+    height:calc(100% - 40px);
+}
+
+.chart-box{
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+.chart-box canvas{
+    max-height:100% !important;
+}
+
+.pie-container{
+    display:grid;
+    grid-template-rows:40% auto 40%;
+    gap:5px;
+    height:100%;
+    align-items:center;
+}
+
+#pieOmzet,
+#pieEbitda{
+    max-height:300px !important;
+}
+
+.legend-box{
+    text-align:center;
+    font-size:11px;
+    font-weight:bold;
+    color:#444;
+}
+
+canvas{
+    width:100% !important;
+    height:100% !important;
+}
+
+.download-dashboard-btn{
+    position:absolute;
+    top:10px;
+    right:70px;
+    z-index:1000;
+    background:#2e7d32;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.unit-dashboard-content{
+    position:relative;
+    width:92vw;
+    height:84vh;
+    margin:2vh auto;
+    background:white;
+    border-radius:10px;
+    padding:15px;
+    overflow:hidden;
+}
+
+.unit-dashboard-grid{
+    display:grid;
+    grid-template-columns:55% 45%;
+    gap:10px;
+    width:100%;
+    height:100%;
+}
+
+.icon-slot{
+    display:inline-block;
+    width:28px;
+    text-align:center;
+}
+
+#txtCari{
+    padding:8px;
+    border:1px solid #ccc;
+    border-radius:5px;
+    width:250px;
+}
+
+.search-box{
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.search-btn{
+    padding:8px 12px;
+    cursor:pointer;
+}
+
+.loading{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:white;
+    z-index:9999;
+}
+
+.spinner{
+    width:60px;
+    height:60px;
+    border:6px solid #ddd;
+    border-top:6px solid #1565c0;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+.loading-text{
+    margin-top:15px;
+    font-size:18px;
+    font-weight:bold;
+    color:#1565c0;
+    text-align:center;
+}
+
+.tgl-keluar{
+    background:#ffe4e1;
+    color:#7a1f1f;
+    font-weight:600;
+    text-align:center;
+}
+
+.th-keluar{
+    background:#ffb6c1 !important;
+    color:#7a1f1f !important;
+}
+
+
+@keyframes spin{
+    0%{
+        transform:rotate(0deg);
+    }
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script>
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+</head>
+
+<body>
+
+<div class="header">
+    PROFIL KARYAWAN KOPERASI KONSUMEN KARYAWAN TJIWI KIMIA
+</div>
+
+<div class="toolbar">
+        <div class="periode-box">
+            <label>UNIT :</label>
+            <select id="cmbUnit"
+                onchange="filterUnit()">
+            </select>
+            <label style="margin-left:15px;">
+                <input type="checkbox"
+                    id="chkAktif"
+                    checked
+                    onchange="ubahStatus('AKTIF')">
+                Karyawan Aktif
+            </label>
+            <label>
+                <input type="checkbox"
+                    id="chkKeluar"
+                    onchange="ubahStatus('KELUAR')">
+                Karyawan Non Aktif
+            </label>
+        </div>
+        <div class="search-box">
+        <input type="text"
+            id="txtCari"
+               placeholder="Cari Karyawan">
+        <button onclick="cariSemua()"
+                class="search-btn">
+            🔍
+        </button>
+    </div>
+       <button onclick="openDashboard()">
+        DASHBOARD
+    </button>
+</div>
+
+<div id="loading" class="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">
+        Loading Data Karyawan...
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+        <tr>
+            <th>Noreg</th>
+            <th>Nama</th>
+            <th>Alamat</th>
+            <th>Tempat Lahir</th>
+            <th>Tanggal Lhr.</th>
+            <th>Telepon</th>
+            <th>Unit</th>
+            <th>Tgl. Masuk</th>
+            <th id="thTglKeluar" style="display:none;">Tgl. Keluar</th>
+            <th>NIK</th>
+            <th>BPJS Kes</th>
+            <th>BPJS TK</th>
+            <th class="center">Dokumen</th>
+        </tr>
+        </thead>
+        <tbody id="listData"></tbody>
+    </table>    
+</div>
+
+<script>
+
+const API_URL = "https://script.google.com/macros/s/AKfycbxXcRqaypV8sUXju3zebBwWKSQ_-qHQAFcykOesQFOdIqsAkfK3TPClgzd5cm-ibPaW/exec";
+
+let allData = [];
+let filteredData = [];
+let unitData = [];
+let barChartObj = null;
+let pieOmzetObj = null;
+let pieEbitdaObj = null;
+let chartEbitdaObj = null;
+let chartOmzetObj = null;
+let chartKPIObj = null;
+let statusFilter = "AKTIF";
+
+
+function getAngkatan(noreg){
+
+    if(!noreg)
+        return "";
+    noreg = noreg.toString().trim();
+
+    // minimal 4 digit
+    if(noreg.length < 4)
+        return "";
+
+    // ambil 2 digit mulai index ke-2
+    const yy =
+        parseInt(
+            noreg.substr(2,2)
+        );
+
+    // tentukan abad
+    let tahun = 1900 + yy;
+
+    // bila ingin support 2000+
+    if(yy < 30){
+        tahun = 2000 + yy;
+    }
+    return tahun;
+}
+
+
+function filterUnit(){
+    const unit =
+        document.getElementById(
+            "cmbUnit"
+        ).value;
+    filteredData =
+        allData.filter(x =>
+            x.unit == unit
+        );
+    tampilData(filteredData);
+}
+
+function isiComboUnit(){
+    const cmb =
+        document.getElementById(
+            "cmbUnit"
+        );
+    cmb.innerHTML =
+        `<option value="SEMUA">
+            Semua Unit
+        </option>`;
+    const unit =
+        [...new Set(
+            allData.map(x => x.unit)
+        )];
+    unit.sort();
+    unit.forEach(p => {
+        cmb.innerHTML += `
+            <option value="${p}">
+                ${p}
+            </option>
+        `;
+    });
+    cmb.value = "SEMUA";
+}
+
+function ubahStatus(status){
+    const chkAktif = document.getElementById("chkAktif");
+    const chkKeluar = document.getElementById("chkKeluar");
+    if(status == "AKTIF"){
+        chkAktif.checked = true;
+        chkKeluar.checked = false;
+        statusFilter = "AKTIF";
+    }else{
+        chkAktif.checked = false;
+        chkKeluar.checked = true;
+        statusFilter = "KELUAR";
+    }
+    filterUnit();
+}
+
+function filterUnit(){
+    const unit =document.getElementById("cmbUnit").value;
+    const cari = document.getElementById("txtCari").value
+        .toUpperCase()
+        .trim();
+    let dataFilter = allData;
+    // FILTER STATUS
+    dataFilter =
+        dataFilter.filter(x => x.status == statusFilter);
+    // FILTER UNIT
+    if(unit != "SEMUA"){
+        dataFilter = dataFilter.filter(x => x.unit == unit);
+    }
+    unitData = dataFilter;
+    // FILTER NAMA
+    filteredData =
+        unitData.filter(
+            x =>
+                cari == "" ||
+                x.nama
+                    .toUpperCase()
+                    .includes(cari)
+        );
+    tampilData(
+        filteredData
+    );
+}
+
+function cariSemualama(){
+    const cari =
+        document.getElementById(
+            "txtCari"
+        ).value
+        .trim()
+        .toUpperCase();
+    filteredData =
+        unitData.filter(item =>
+            item.nama
+                .toUpperCase()
+                .includes(cari)
+        );
+    tampilData(
+        filteredData
+    );
+}
+
+
+function cariSemua(){
+    const cari =
+        document.getElementById(
+            "txtCari"
+        ).value
+        .trim()
+        .toUpperCase();
+    if(cari == ""){
+        filterUnit();
+        return;
+    }
+    const hasil =
+        allData.filter(item =>
+            item.nama &&
+            item.nama
+                .toUpperCase()
+                .includes(cari)
+        );
+    tampilData(
+        hasil
+    );
+}
+
+function openForm(url){
+    window.open(url, "_blank");
+}
+
+async function loadData(){
+    try{
+        const response =
+            await fetch(API_URL);
+        allData =
+            await response.json();
+        document.getElementById("loading")
+            .style.display = "none";
+        // isi combo tahun
+        isiComboUnit();
+        // tampilkan data tahun terakhir
+        filterUnit();
+    }
+    catch(err){
+        document.getElementById("loading")
+            .innerHTML =
+            "Gagal load data";
+        console.log(err);
+    }
+}
+
+function openDashboard(){
+    document.getElementById("dashboardModal")
+        .style.display = "block";
+    buatGrafik();
+}
+
+function closeDashboard(){
+    document.getElementById("dashboardModal")
+        .style.display = "none";
+}
+
+
+function buatGrafik(){
+
+    const unit =
+        document.getElementById(
+            "cmbUnit"
+        ).value;
+
+    const dataUnit = unitData;
+
+    // object penampung
+    const angkatanData = {};
+
+    // looping data unit
+    dataUnit.forEach(item => {
+        const tahun =
+            getAngkatan(
+                item.noreg
+            );
+
+        // skip bila kosong
+        if(!tahun)
+            return;
+
+        // buat counter
+        if(!angkatanData[tahun]){
+            angkatanData[tahun] = 0;
+        }
+
+        // tambah jumlah
+        angkatanData[tahun]++;
+    });
+
+    // sorting tahun
+    const sorted =
+        Object.entries(
+            angkatanData
+        ).sort((a,b)=>
+            a[0] - b[0]
+        );
+
+    // label chart
+    const labels =
+        sorted.map(x=>x[0]);
+
+    // jumlah alumni
+    const totals =
+        sorted.map(x=>x[1]);
+
+    // destroy chart lama
+    if(barChartObj)
+        barChartObj.destroy();
+
+    // buat chart baru
+    barChartObj =
+        new Chart(
+        document.getElementById(
+            "barChart"
+        ),
+        {
+            type:"bar",
+            data:{
+                labels:labels,
+                datasets:[{
+                    label:
+                        "Jumlah Alumni",
+                    data:totals,
+                    backgroundColor:
+                        "#1565c0"
+                }]
+            },
+            options:{
+                responsive:true,
+                maintainAspectRatio:false,
+                layout:{
+                    padding:{
+                    top:30
+                    }
+                },
+                plugins:{
+                    title:{
+                        display:true,
+                        text:
+                        "PROFIL KARYAWAN - " + unit,
+                        font:{
+                            family:"Arial",
+                            size:22,
+                            weight:"bold"
+                        },
+                        padding:{
+                            top:10,
+                            bottom:40
+                        },
+                        color:"#1565c0"
+                    },
+                    legend:{
+                        display:false
+                    },
+                    datalabels:{
+                        anchor:"end",
+                        align:"top",
+                        color:"#000",
+                        font:{
+                            size:12,
+                            weight:"bold"
+                        },
+                        formatter:function(value){
+                            return value;
+                        }
+                    },                   
+                    scales:{
+                        y:{
+                            beginAtZero:true
+                        }
+                    }
+                } 
+            },
+            plugins:[ChartDataLabels]
+        }
+    );
+}
+
+async function downloadDashboardPDF(){
+    const { jsPDF } = window.jspdf;
+    const dashboard =
+        document.querySelector(".dashboard-content");
+    const btn =
+        dashboard.querySelector(
+        ".download-dashboard-btn"
+        );
+        btn.style.display = "none";
+    const closeBtn =
+        dashboard.querySelector(
+            ".close"
+        );
+        closeBtn.style.display = "none";
+    // capture dashboard
+    dashboard.style.height = "auto";
+    const canvas =
+        await html2canvas(dashboard, {
+            scale:2,
+            useCORS:true,
+            backgroundColor:"#ffffff",
+            windowWidth: dashboard.scrollWidth,
+            windowHeight: dashboard.scrollHeight
+        });
+    const imgData =
+        canvas.toDataURL("image/png");
+    // ukuran canvas
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+    // buat PDF landscape
+    const pdf =
+        new jsPDF({
+            orientation:"landscape",
+            unit:"mm",
+            format:"a4"
+        });
+    // ukuran halaman pdf
+    const pageWidth =
+        pdf.internal.pageSize.getWidth();
+    const pageHeight =
+        pdf.internal.pageSize.getHeight();
+    // margin
+    const margin = 5;
+    // area tersedia
+    const availableWidth =
+        pageWidth - (margin * 2);
+    const availableHeight =
+        pageHeight - (margin * 2);
+    // hitung rasio
+    const ratio =
+        Math.min(
+            availableWidth / imgWidth,
+            availableHeight / imgHeight
+        );
+    // ukuran final
+    const finalWidth =
+        imgWidth * ratio;
+    const finalHeight =
+        imgHeight * ratio;
+    // posisi center
+    const x =
+        (pageWidth - finalWidth) / 2;
+    const y =
+        (pageHeight - finalHeight) / 2;
+    // masukkan gambar
+    pdf.addImage(
+        imgData,
+        "PNG",
+        x,
+        y,
+        finalWidth,
+        finalHeight
+    );
+    // download
+    pdf.save("Dashboard_Tilik.pdf");
+    dashboard.style.height = "96vh";
+    btn.style.display = "block";
+    closeBtn.style.display = "block";
+}
+
+
+function formatTanggal(tgl){
+    if(!tgl) return "";
+    tgl = tgl.toString();
+    // pastikan 8 digit
+    if(tgl.length != 8) return tgl;
+    const tahun = tgl.substring(0,4);
+    const bulan = tgl.substring(4,6);
+    const hari = tgl.substring(6,8);
+    return hari + "-" + bulan + "-" + tahun;
+}
+
+let isDragging = false;
+let startX = 0;
+let startY = 0;
+
+function lihatGambar(fileId){
+    zoomLevel = 1;
+    posX = 0;
+    posY = 0;
+    const img =
+        document.getElementById("imgPreview");
+    img.src =
+        "https://drive.google.com/thumbnail?id=" +
+        fileId +
+        "&sz=w2000";
+    updateTransform();
+    document.getElementById(
+        "modalGambar"
+    ).style.display = "flex";
+}
+
+function tutupGambar(){
+    document.getElementById(
+        "modalGambar"
+    ).style.display = "none";
+}
+
+function zoomIn(){
+    if(zoomLevel < 3){
+        zoomLevel += 0.2;
+        updateTransform();
+    }
+}
+
+function zoomOut(){
+    if(zoomLevel > 1){
+        zoomLevel -= 0.2;
+        updateTransform();
+    }
+}
+
+function resetZoom(){
+    zoomLevel = 1;
+    posX = 0;
+    posY = 0;
+    updateTransform();
+}
+
+function updateTransform(){
+    document.getElementById(
+        "imgPreview"
+    ).style.transform =
+        `translate(${posX}px, ${posY}px)
+         scale(${zoomLevel})`;
+}
+
+let zoomLevel = 1;
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+        const img = document.getElementById("imgPreview");
+        img.addEventListener("mousedown",
+            function(e){
+                if(zoomLevel <= 1) return;
+                isDragging = true;
+                startX = e.clientX - posX;
+                startY = e.clientY - posY;
+            }
+        );
+        document.addEventListener("mousemove",
+            function(e){
+                if(!isDragging) return;
+                posX =  e.clientX - startX;
+                posY = e.clientY - startY;
+                updateTransform();
+            }
+        );
+        document.addEventListener("mouseup",
+            function(){
+                isDragging = false;
+            }
+        );
+        img.addEventListener("wheel", 
+            function(e){
+                e.preventDefault();
+                if(e.deltaY < 0){
+                    zoomLevel += 0.1;
+                }else{
+                    zoomLevel = Math.max(0.2,zoomLevel - 0.1);
+                }
+            img.style.transform = "scale(" + zoomLevel + ")";
+        });
+    }
+);
+
+
+function tampilData(data){
+    const list = document.getElementById("listData");
+    list.innerHTML = "";
+    const showKeluar = (statusFilter == "KELUAR");
+    document.getElementById("thTglKeluar").style.display = showKeluar ? "" : "none";
+    document.getElementById("thTglKeluar").className = showKeluar ? "th-keluar" : "";
+    data.forEach(x => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+        <td>${x.noreg}</td>
+        <td>${x.nama}</td>
+        <td>${x.alamat}</td>
+        <td>${x.tmplahir}</td>
+        <td>${formatTanggal(x.tgllahir)}</td>
+        <td>${x.hp}</td>
+        <td>${x.unit}</td>
+        <td>${formatTanggal(x.tglmasuk)}</td>
+        ${showKeluar
+            ? `<td class="tgl-keluar">
+                ${formatTanggal(x.tglkeluar)}
+            </td>`
+            : ``
+        }
+        <td>${x.nik}</td>
+        <td>${x.bpjskes}</td>
+        <td>${x.bpjstk}</td>
+        <td align="left">
+            <div class="icon-group">
+                <span class="icon-biodata"
+                    title="Biodata"
+                    onclick="openBiodata('${x.noreg}')">
+                    <i class="fa-solid fa-user"></i>
+                </span>
+                <span class="icon-foto"
+                    title="Foto"
+                    onclick="lihatGambar('${x.fotoId}')">
+                    <i class="fa-solid fa-camera"></i>
+                </span>
+                <span class="icon-ktp"
+                    title="KTP"
+                    onclick="lihatGambar('${x.ktpId}')">
+                    <i class="fa-solid fa-id-card"></i>
+                </span>
+                <span class="icon-kk"
+                    title="KK"
+                    onclick="lihatGambar('${x.kkId}')">
+                    <i class="fa-solid fa-file-lines"></i>
+                </span>
+                <span class="icon-npwp"
+                    title="NPWP"
+                    onclick="lihatGambar('${x.npwpId}')">
+                    <i class="fa-solid fa-receipt"></i>
+                </span>
+            </div>
+        </td>
+        `;
+        list.appendChild(tr);
+    });
+}
+
+function openBiodata(noreg){
+    window.open(
+        "biodata.html?noreg=" + noreg,
+        "_blank"
+    );
+}
+
+function formatHasil(nilai){
+    if(nilai == null || nilai == "")
+        return "0,00";
+    return parseFloat(nilai)
+        .toLocaleString(
+            "id-ID",
+            {
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
+            }
+        );
+}
+
+function toNumber(nilai){
+    if(!nilai)
+        return 0;
+    // ubah ke string
+    nilai = nilai.toString();
+    // hapus titik ribuan
+    nilai = nilai.replace(/\./g, "");
+    // ganti koma jadi titik
+    nilai = nilai.replace(",", ".");
+    // convert number
+    return parseFloat(nilai) || 0;
+}
+
+function toDecimal(nilai){
+    if(!nilai)
+        return 0;
+    nilai = nilai.toString().trim();
+    // hanya ganti koma ke titik
+    nilai = nilai.replace(",", ".");
+    return parseFloat(nilai) || 0;
+}
+
+function formatAngka(nilai){
+    if(nilai == null || nilai == "")
+        return "0,00";
+    return parseFloat(nilai)
+        .toLocaleString("id-ID", {
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+        });
+}
+
+
+function toMoney(nilai){
+    if(!nilai)
+        return 0;
+    nilai = nilai.toString().trim();
+    // hapus titik ribuan
+    nilai =
+        nilai.replace(/\./g, "");
+    // ubah koma jadi titik
+    nilai =
+        nilai.replace(",", ".");
+    return parseFloat(nilai) || 0;
+}
+
+
+function closeUnitDashboard(){
+    document.getElementById(
+        "unitDashboardModal"
+    ).style.display = "none";
+}
+
+async function downloadUnitDashboardPDF(){
+    const { jsPDF } = window.jspdf;
+    const dashboard =
+        document.querySelector(
+            ".unit-dashboard-content"
+        );
+    const btn =
+        dashboard.querySelector(
+        ".download-dashboard-btn"
+        );
+        btn.style.display = "none";
+    const closeBtn =
+        dashboard.querySelector(
+            ".close"
+        );
+        closeBtn.style.display = "none";
+    dashboard.style.height = "auto";
+    const canvas =
+        await html2canvas(dashboard, {
+            scale:2,
+            useCORS:true,
+            backgroundColor:"#ffffff",
+            windowWidth: dashboard.scrollWidth,
+            windowHeight: dashboard.scrollHeight
+        });
+    const imgData =
+        canvas.toDataURL("image/png");
+    const pdf =
+        new jsPDF({
+            orientation:"landscape",
+            unit:"mm",
+            format:"a4"
+        });
+    const pageWidth =
+        pdf.internal.pageSize.getWidth();
+    const pageHeight =
+        pdf.internal.pageSize.getHeight();
+    const margin = 5;
+    const availableWidth =
+        pageWidth - (margin * 2);
+    const availableHeight =
+        pageHeight - (margin * 2);
+    const ratio =
+        Math.min(
+            availableWidth / canvas.width,
+            availableHeight / canvas.height
+        );
+    const finalWidth =
+        canvas.width * ratio;
+    const finalHeight =
+        canvas.height * ratio;
+    const x =
+        (pageWidth - finalWidth) / 2;
+    const y =
+        (pageHeight - finalHeight) / 2;
+    pdf.addImage(
+        imgData,
+        "PNG",
+        x,
+        y,
+        finalWidth,
+        finalHeight
+    );
+    pdf.save("Dashboard_Unit.pdf");
+    dashboard.style.height = "96vh";
+    btn.style.display = "block";
+    closeBtn.style.display = "block";
+}
+
+document
+.getElementById("txtCari")
+.addEventListener(
+    "keypress",
+    function(e){
+        if(e.key === "Enter"){
+            cariSemua();
+        }
+    }
+);
+
+loadData();
+
+</script>
+
+<div id="unitDashboardModal" class="modal">
+    <<div class="unit-dashboard-content">
+        <span class="close"
+            onclick="closeUnitDashboard()">
+            &times;
+        </span>
+        <button class="download-dashboard-btn"
+            onclick="downloadUnitDashboardPDF()">
+            DOWNLOAD PDF
+        </button>
+        <div class="unit-dashboard-grid">
+            <!-- EBITDA -->
+            <div class="chart-box">
+                <canvas id="chartEbitda"></canvas>
+            </div>
+            <!-- kanan -->
+            <div style="
+                display:grid;
+                grid-template-rows:48% 48%;
+                gap:10px;
+            ">
+                <!-- omzet -->
+                <div class="chart-box">
+                    <canvas id="chartOmzet"></canvas>
+                </div>
+                <!-- KPI -->
+                <div class="chart-box">
+                    <canvas id="chartKPI"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="pdfModal" class="modal">
+    <div class="modal-content">
+        <span class="close"
+              onclick="closePDF()">
+              &times;
+        </span>
+        <button id="downloadBtn"
+                class="download-btn">
+            Download PDF
+        </button>
+        <iframe id="pdfFrame"></iframe>
+    </div>
+</div>
+
+<div id="dashboardModal" class="modal">
+    <div class="dashboard-content">
+        <span class="close"
+              onclick="closeDashboard()">
+              &times;
+        </span>
+        <button class="download-dashboard-btn"
+                onclick="downloadDashboardPDF()">
+                DOWNLOAD PDF
+        </button>
+        <div class="dashboard-grid">
+            <!-- kiri -->
+            <div class="chart-box">
+                <canvas id="barChart"></canvas>
+            </div>
+            <!-- kanan -->
+            <div class="pie-container">
+                <!-- pie atas -->
+                <div class="chart-box">
+                    <canvas id="pieOmzet"></canvas>
+                </div>
+                <!-- legenda -->
+                <div class="legend-box"
+                     id="legendContainer">
+                </div>
+                <!-- pie bawah -->
+                <div class="chart-box">
+                    <canvas id="pieEbitda"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalGambar" class="modal-gambar">
+    <div class="modal-content-gambar">
+        <span class="close-btn" onclick="tutupGambar()">&times;</span>
+        <div class="toolbar-gambar">
+            <button onclick="zoomOut()">−</button>
+            <button onclick="resetZoom()">100%</button>
+            <button onclick="zoomIn()">+</button>
+        </div>
+        <div id="imgContainer" class="img-container">
+            <img id="imgPreview">
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

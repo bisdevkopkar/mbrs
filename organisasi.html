@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>
+Portal Profil Unit Koperasi
+</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+
+
+
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Tahoma,sans-serif;
+}
+
+body{
+    background:#f4f6fa;
+    overflow:hidden;
+}
+
+/* LOADING */
+
+.loading{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:white;
+    z-index:9999;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+.spinner{
+    width:60px;
+    height:60px;
+    border:6px solid #ddd;
+    border-top:6px solid #1565c0;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+.loading-text{
+    margin-top:15px;
+    color:#1565c0;
+    font-weight:bold;
+    font-size:18px;
+}
+
+@keyframes spin{
+    0%{
+        transform:rotate(0deg);
+    }
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
+/* TOPBAR */
+
+.topbar{
+    height:70px;
+    background:#003366;
+    color:white;
+    display:flex;
+    align-items:center;
+    padding:0 25px;
+    box-shadow:
+    0 2px 8px rgba(0,0,0,.15);
+}
+
+.judul{
+    font-size:24px;
+    font-weight:bold;
+    line-height:1.2;
+}
+
+.logo-koperasi{
+    width:60px;
+    height:60px;
+    object-fit:contain;
+    margin-right:15px;
+}
+
+/* LAYOUT */
+
+.container{
+    display:flex;
+    height:calc(100vh - 70px);
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:320px;
+    background:white;
+    border-right:1px solid #ddd;
+    overflow-y:auto;
+}
+
+.menu-title{
+    background:#004080;
+    color:white;
+    padding:15px;
+    font-weight:bold;
+    font-size:18px;
+}
+
+.sidebar details{
+    border-bottom:1px solid #eee;
+}
+
+.sidebar summary{
+    padding:14px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.sidebar summary:hover{
+    background:#f2f6ff;
+}
+
+.submenu a{
+    display:block;
+    padding:10px 25px;
+    text-decoration:none;
+    color:#333;
+}
+
+.submenu a:hover{
+    background:#eef4ff;
+    color:#004080;
+}
+
+/* CONTENT */
+
+.content{
+    flex:1;
+    overflow-y:auto;
+    padding:20px;
+}
+
+/* HEADER UNIT */
+
+.unit-header{
+    display:flex;
+    align-items:center;
+    gap:15px;
+
+    margin-bottom:20px;
+}
+
+.logo-unit{
+    height:80px;
+    width:auto;
+    object-fit:contain;
+}
+
+.nama-unit{
+    font-size:34px;
+    font-weight:bold;
+    color:#003366;
+}
+
+/* GALLERY */
+
+.gallery-wrapper{
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    margin-bottom:20px;
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,.1);
+}
+
+.gallery-track{
+    display:flex;
+    gap:10px;
+    padding:10px;
+    width:max-content;
+    animation:
+    galleryMove
+    30s linear infinite;
+}
+
+.gallery-track img{
+    width:280px;
+    height:180px;
+    border-radius:10px;
+    object-fit:cover;
+}
+
+@keyframes galleryMove{
+    from{
+        transform:
+        translateX(0);
+    }
+    to{
+        transform:
+        translateX(-50%);
+    }
+}
+
+/* PROFIL */
+
+.profil-area{
+    display:flex;
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.leader-box{
+    width:320px;
+    background:white;
+    border-radius:12px;
+    padding:15px;
+    box-shadow:
+    0 2px 8px rgba(0,0,0,.1);
+}
+
+.leader-photo{
+    width:100%;
+    height:380px;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+.leader-info{
+    margin-top:15px;
+}
+
+.leader-info div{
+    margin-bottom:10px;
+    line-height:1.5;
+}
+
+.btn-profil{
+    display:block;
+    margin-top:15px;
+    text-align:center;
+    background:#1565c0;
+    color:white;
+    text-decoration:none;
+    padding:12px;
+    border-radius:8px;
+    font-weight:bold;
+}
+
+.btn-profil:hover{
+    background:#0d47a1;
+}
+
+/* INFO UNIT */
+
+.unit-box{
+    flex:1;
+    background:white;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:
+    0 2px 8px rgba(0,0,0,.1);
+}
+
+.unit-box h3{
+    color:#003366;
+    margin-bottom:20px;
+}
+
+.info-item{
+    margin-bottom:18px;
+}
+
+.info-item b{
+    display:block;
+    color:#004080;
+    margin-bottom:6px;
+}
+
+/* JOB HEADER */
+
+.job-header{
+    background:#003366;
+    color:white;
+    padding:15px 20px;
+    border-radius:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+    font-size:30px;
+    font-weight:bold;
+}
+
+.job-header i{
+    font-size:32px;
+    color:white;
+}
+
+/* JOB BOX */
+
+.job-box{
+    background:white;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:15px;
+    box-shadow:
+    0 2px 8px rgba(0,0,0,.1);
+}
+
+.job-box h3{
+    color:#003366;
+    margin-bottom:15px;
+}
+
+.job-box div{
+    line-height:1.8;
+}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar{
+    width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#bbb;
+    border-radius:5px;
+}
+
+/* MOBILE */
+
+@media(max-width:1000px){
+    body{
+        overflow:auto;
+    }
+    .container{
+        flex-direction:column;
+        height:auto;
+    }
+    .sidebar{
+        width:100%;
+        height:250px;
+    }
+    .content{
+        width:100%;
+    }
+    .profil-area{
+        flex-direction:column;
+    }
+    .leader-box{
+        width:100%;
+    }
+    .nama-unit{
+        font-size:22px;
+    }
+    .gallery-track img{
+        width:220px;
+        height:140px;
+    }
+    .judul{
+        font-size:18px;
+    }
+
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+<div id="loading"
+     class="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">
+        Loading Data Unit...
+    </div>
+</div>
+
+<header class="topbar">
+    <img src="logo.png"
+         class="logo-koperasi">
+    <div class="judul">
+        KOPERASI KONSUMEN KARYAWAN
+        TJIWI KIMIA
+    </div>
+
+</header>
+
+<div class="container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="menu-title">
+            DIVISI & UNIT
+        </div>
+        <div id="menuContainer">
+        </div>
+    </aside>
+
+    <!-- CONTENT -->
+
+    <main class="content">
+        <!-- HEADER UNIT -->
+        <div class="unit-header">
+            <img id="logoUnit"
+                 class="logo-unit">
+            <div id="namaUnit"
+                 class="nama-unit">
+            </div>
+        </div>
+
+        <!-- GALLERY -->
+
+        <div class="gallery-wrapper">
+            <div id="galleryTrack"
+                 class="gallery-track">
+            </div>
+        </div>
+        <!-- PROFIL UNIT -->
+        <div class="profil-area">
+            <!-- PIMPINAN -->
+            <div class="leader-box">
+                <img id="fotoPimpinan"
+                     class="leader-photo">
+                <div class="leader-info">
+                    <div id="noreg"></div>
+                    <div id="nama"></div>
+                    <div id="hp"></div>
+                    <div id="email"></div>
+                </div>
+                <a id="btnProfil"
+                   class="btn-profil">
+                    PROFIL KEPALA UNIT
+                </a>
+            </div>
+
+            <!-- DESKRIPSI -->
+
+            <div class="unit-box">
+                <h3>
+                    INFORMASI UMUM
+                </h3>
+                <div class="info-item">
+                    <b>Deskripsi</b>
+                    <div id="deskripsiUnit"></div>
+                </div>
+                <div class="info-item">
+                    <b>Alamat</b>
+                    <div id="alamatUnit"></div>
+                </div>
+                <div class="info-item">
+                    <b>Telepon</b>
+                    <div id="teleponUnit"></div>
+                </div>
+                <div class="info-item">
+                    <b>Email</b>
+                    <div id="emailUnit"></div>
+                </div>
+                <div class="info-item">
+                    <b>Jam Operasional</b>
+                    <div id="jamKerja"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JOB DESCRIPTION -->
+
+        <div class="job-header">
+            <div>
+                URAIAN PEKERJAAN
+            </div>
+            <a id="jobdesLink"
+               target="_blank">
+                <i class="fas fa-file-pdf"></i>
+            </a>
+        </div>
+        <div class="job-box">
+            <h3>
+                FUNGSI / TUJUAN PEKERJAAN
+            </h3>
+            <div id="fungsiUnit"></div>
+        </div>
+        <div class="job-box">
+            <h3>
+                SPESIFIKASI / KUALIFIKASI PEKERJA
+            </h3>
+            <div id="spesifikasiUnit"></div>
+        </div>
+        <div class="job-box">
+            <h3>
+                TUGAS POKOK DAN TANGGUNG JAWAB
+            </h3>
+            <div id="jobdesUnit"></div>
+        </div>
+    </main>
+</div>
+
+<script>
+
+const API_URL = "https://script.google.com/macros/s/AKfycbx8QZlCkZDyL_XXYE9AiZeHkecOiClgm0dydn6QvVnV7v4PYVyPzDiiL1qZ-A7GRIzF/exec";
+
+let allData = [];
+
+loadData();
+
+async function loadData(){
+    try{
+        const response = await fetch(API_URL);
+        allData = await response.json();
+        buildMenu();
+        if(allData.length > 0){
+            showUnit(allData[0]);
+        }
+        document.getElementById("loading").style.display = "none";
+
+    }
+    catch(err){
+        document.getElementById("loading").style.display = "none";
+        alert("Gagal mengambil data");
+        console.log(err);
+    }
+
+}
+
+/* ==========================
+   MENU DIVISI
+========================== */
+
+function buildMenu()
+{
+    const container = document.getElementById("menuContainer");
+    container.innerHTML = "";
+    let group = {};
+    allData.forEach(item=>{
+        if(!group[item.divisi])
+        {
+            group[item.divisi] = [];
+        }
+        group[item.divisi]
+        .push(item);
+    });
+
+    Object.keys(group)
+    .forEach(divisi=>{
+        const details = document.createElement("details");
+        details.innerHTML = 
+        `<summary>
+            ${divisi}
+        </summary>
+        <div class="submenu">
+        ${
+            group[divisi]
+            .map(unit=>`
+                <a href="#"
+                onclick="
+                showUnitByName('${unit.unit.replace(/'/g,"\\'")}');
+                return false;
+                ">
+                ${unit.unit}
+                </a>
+            `)
+            .join("")
+        }
+        </div>`;
+        container.appendChild(details);
+    });
+}
+
+/* ==========================
+   PILIH UNIT
+========================== */
+
+function showUnitByName(unitName)
+{
+    const item = allData.find(x => x.unit == unitName);
+    if(item){showUnit(item);
+    }
+}
+
+/* ==========================
+   TAMPILKAN DATA
+========================== */
+
+function showUnit(x)
+{
+    /* LOGO */
+    document.getElementById("logoUnit").src = "https://drive.google.com/thumbnail?id=" + x.logoId + "&sz=w1000";
+
+    /* NAMA UNIT */
+    document.getElementById("namaUnit").innerHTML = x.unit;
+
+    /* FOTO PIMPINAN */
+    document.getElementById("fotoPimpinan").src = "https://drive.google.com/thumbnail?id=" + x.fotoId + "&sz=w1000";
+
+    /* DATA PIMPINAN */
+    document.getElementById("noreg").innerHTML = "<b>No Register :</b> " + x.noreg;
+    document.getElementById("nama").innerHTML = "<b>Nama :</b> " + x.nama;
+    document.getElementById("hp").innerHTML = "<b>Telepon :</b> " + x.hp;
+    document.getElementById("email").innerHTML = "<b>Email :</b> " + x.email;
+
+    /* PROFIL */
+    document.getElementById("btnProfil").href = "biodata.html?noreg=" + encodeURIComponent(x.noreg);
+
+    /* DESKRIPSI */
+    document.getElementById("deskripsiUnit").innerHTML = x.diskripsi || "";
+    document.getElementById("alamatUnit").innerHTML = x.alamat || "";
+    document.getElementById("teleponUnit").innerHTML = x.telepon || "";
+    document.getElementById("emailUnit").innerHTML = x.emailunit || "";
+    document.getElementById("jamKerja").innerHTML = x.jamkerja || "";
+
+    /* JOB DESCRIPTION */
+    document.getElementById("fungsiUnit").innerHTML = formatText(x.fungsi);
+    document.getElementById("spesifikasiUnit").innerHTML = formatText(x.spesifikasi);
+    document.getElementById("jobdesUnit").innerHTML = formatText(x.jobdes);
+
+    /* PDF JOBDES */
+
+    if(x.pdfId)
+    {
+        document.getElementById("jobdesLink").href = "https://drive.google.com/file/d/" + x.pdfId + "/view";
+    }else{
+        document.getElementById("jobdesLink").href = "#";
+    }
+
+    /* GALLERY */
+    buildGallery(x);
+}
+
+/* ==========================
+   FORMAT TEXT
+========================== */
+
+function formatText(
+    txt
+){
+    if(!txt)
+        return "";
+    return txt.toString().replace(/\n/g,"<br>");
+}
+
+/* ==========================
+   GALLERY FOTO
+========================== */
+
+function buildGallery(
+    x
+){
+    const gallery =
+    document
+    .getElementById(
+        "galleryTrack"
+    );
+    gallery.innerHTML = "";
+    const fotos = [
+        x.foto1Id,
+        x.foto2Id,
+        x.foto3Id,
+        x.foto4Id,
+        x.foto5Id,
+        x.foto6Id,
+        x.foto7Id,
+        x.foto8Id,
+        x.foto9Id,
+        x.foto10Id
+    ];
+    fotos.forEach(id=>{
+        if(id){
+            gallery.innerHTML += `<img src="https://drive.google.com/thumbnail?id=${id}&sz=w1000">`;
+        }
+
+    });
+
+    /* DUPLIKAT
+       AGAR SCROLL
+       TIDAK PUTUS */
+
+    fotos.forEach(id=>{
+        if(id){
+            gallery.innerHTML +=
+            `<img src="
+            https://drive.google.com/thumbnail?id=${id}&sz=w1000
+            ">`;
+        }
+    });
+}
+
+</script>
+
+</body>
+</html>
