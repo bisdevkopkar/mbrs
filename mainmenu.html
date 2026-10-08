@@ -411,8 +411,8 @@ body{
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <ul class="submenu">
-                            <li><a href="#">Struktur Organisasi</a></li>
-                            <li><a href="#">Profil Unit Organisasi</a></li>
+                            <li><a href="#" onclick="lihatStruktur()">Struktur Organisasi</a></li>
+                            <li><a href="organisasi.html">Profil Unit Organisasi</a></li>
                             <li><a href="#">Job Specification</a></li>
                             <li><a href="#">Job Description</a></li>
                         </ul>
@@ -423,7 +423,7 @@ body{
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <ul class="submenu">
-                            <li><a href="#">Daftar Pegawai</a></li>
+                            <li><a href="karyawan.html">Daftar Pegawai</a></li>
                             <li><a href="#">Detail Pegawai</a></li>
                             <li><a href="#">Kompetensi</a></li>
                             <li><a href="#">Riwayat Hidup</a></li>
@@ -437,7 +437,7 @@ body{
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <ul class="submenu">
-                            <li><a href="#">Kinerja Unit (KPI)</a></li>
+                            <li><a href="kpireport.html">Kinerja Unit (KPI)</a></li>
                             <li><a href="#">Kinerja Personil (PPO)</a></li>
                             <li><a href="#">Perilaku</a></li>
                             <li><a href="#">Sanksi/Pelanggaran</a></li>
@@ -458,14 +458,26 @@ body{
                     </li>
                     <li class="has-submenu">
                         <div class="menu-title">
-                            <span>Pengembangan</span>
+                            <span>Kompetensi</span>
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <ul class="submenu">
-                            <li><a href="#">Kompetensi</a></li>
+                            <li><a href="#">Matrik Kompetensi</a></li>
                             <li><a href="#">Program Pelatihan</a></li>
                             <li><a href="#">Pelatihan & Sertifikasi</a></li>
                             <li><a href="#">Promosi & Talenta</a></li>
+                        </ul>
+                    </li>
+                    <li class="has-submenu">
+                        <div class="menu-title">
+                            <span>Program Berkelanjutan</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <ul class="submenu">
+                            <li><a href="#">Sumbang Saran</a></li>
+                            <li><a href="#">Perbaikan Cepat</a></li>
+                            <li><a href="#">Gugus Kendali Mutu</a></li>
+                            <li><a href="#">Gugus Kendali Proses</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -486,8 +498,10 @@ body{
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <ul class="submenu">
-                            <li><a href="#">Koperasi</a></li>
-                            <li><a href="#">MLP</a></li>
+                            <li><a href="document.html">Semua Dokumen</a></li>
+                            <li><a href="document.html?asal=U">Koperasi</a></li>
+                            <li><a href="document.html?asal=K">MLP</a></li>
+                            <li><a href="document.html?asal=X">Eksternal</a></li>
                         </ul>
                     </li>
                     <li class="has-submenu">
@@ -627,6 +641,14 @@ function lihatStruktur(){
 
 function tutupStruktur(){
     document.getElementById("modalStruktur").style.display = "none";
+}
+
+function bukaDocKoperasi() {
+    window.location.href = "koperasi.html";
+}
+
+function bukaDocMLP() {
+    window.location.href = "mlp.html";
 }
 
 window.onclick = function(event){

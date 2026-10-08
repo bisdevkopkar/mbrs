@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Koperasi Konsumen Karyawan Tjiwi Kimia</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#f5f9fc;
+    color:#333;
+}
+
+/* HEADER */
+header{
+    background:white;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+    padding:15px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:999;
+}
+
+.logo-area{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.logo-area img{
+    width:60px;
+}
+
+.logo-title{
+    line-height:1.3;
+}
+
+.logo-title h2{
+    color:#0f4c81;
+}
+
+.logo-title span{
+    font-size:14px;
+    color:#666;
+}
+
+/* HERO */
+
+.hero{
+    background:linear-gradient(135deg,#dff3ff,#edf8ff,#ffffff);
+    min-height:420px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:50px;
+    flex-wrap:wrap;
+}
+
+.hero-text{
+    flex:1;
+    min-width:300px;
+}
+
+.hero-text h1{
+    font-size:42px;
+    color:#0f4c81;
+    margin-bottom:20px;
+}
+
+.hero-text p{
+    font-size:18px;
+    line-height:1.8;
+    color:#555;
+}
+
+.hero-image{
+    flex:1;
+    text-align:center;
+}
+
+.hero-image i{
+    font-size:220px;
+    color:#87c5ff;
+}
+
+/* MENU SECTION */
+
+.section-title{
+    text-align:center;
+    margin:50px 0 30px;
+}
+
+.section-title h2{
+    color:#0f4c81;
+    font-size:32px;
+}
+
+.main-menu{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+    gap:30px;
+    padding:20px 40px 60px;
+}
+
+.menu-card{
+    background:white;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.menu-card:hover{
+    transform:translateY(-5px);
+}
+
+.card-header{
+    padding:25px;
+    background:linear-gradient(135deg,#4da8ff,#77c5ff);
+    color:white;
+}
+
+.card-header h3{
+    font-size:28px;
+}
+
+.card-body{
+    padding:25px;
+}
+
+.submenu{
+    margin-bottom:20px;
+}
+
+.submenu h4{
+    color:#0f4c81;
+    margin-bottom:10px;
+}
+
+.submenu ul{
+    list-style:none;
+}
+
+.submenu ul li{
+    padding:10px;
+    margin-bottom:8px;
+    background:#f5f9fc;
+    border-radius:10px;
+    transition:.3s;
+    cursor:pointer;
+}
+
+.submenu ul li:hover{
+    background:#dff3ff;
+    padding-left:18px;
+}
+
+/* INFO PANEL */
+
+.info-panel{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    padding:20px 40px 60px;
+}
+
+.info-box{
+    background:white;
+    padding:25px;
+    border-radius:18px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,.06);
+}
+
+.info-box i{
+    font-size:40px;
+    color:#4da8ff;
+    margin-bottom:15px;
+}
+
+/* FOOTER */
+
+footer{
+    background:#0f4c81;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+@media(max-width:768px){
+
+.hero{
+    text-align:center;
+    padding:30px;
+}
+
+.hero-text h1{
+    font-size:30px;
+}
+
+.hero-image i{
+    font-size:140px;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<header>
+
+    <div class="logo-area">
+
+        <!-- Ganti logo koperasi -->
+        <img src="logo.png">
+
+        <div class="logo-title">
+            <h2>Koperasi Konsumen</h2>
+            <span>Karyawan Tjiwi Kimia</span>
+        </div>
+
+    </div>
+
+</header>
+
+<section class="hero">
+
+    <div class="hero-text">
+
+        <h1>
+            Sistem Informasi Terintegrasi
+        </h1>
+
+        <p>
+            Portal digital Koperasi Konsumen Karyawan Tjiwi Kimia
+            untuk pengelolaan Kepegawaian (HRIS) dan Kinerja (MBRS)
+            secara terintegrasi, transparan dan modern.
+        </p>
+
+    </div>
+
+    <div class="hero-image">
+        <img src="hero.png">
+    </div>
+
+</section>
+
+<div class="section-title">
+    <h2>Menu Utama</h2>
+</div>
+
+<section class="main-menu">
+
+    <!-- HRIS -->
+
+    <div class="menu-card">
+
+        <div class="card-header">
+            <h3><i class="fa-solid fa-user-group"></i> HRIS</h3>
+        </div>
+
+        <div class="card-body">
+
+            <div class="submenu">
+                <h4>Organisasi</h4>
+
+                <ul>
+                    <li>Struktur Organisasi</li>
+                    <li>Profil Unit Organisasi</li>
+                    <li>Job Specification</li>
+                    <li>Job Description</li>
+                </ul>
+            </div>
+
+            <div class="submenu">
+                <h4>Kepegawaian</h4>
+
+                <ul>
+                    <li>Daftar Pegawai</li>
+                    <li>Detail Pegawai</li>
+                    <li>Daftar Pelatihan</li>
+                    <li>Riwayat Hidup</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MBRS -->
+
+    <div class="menu-card">
+
+        <div class="card-header">
+            <h3><i class="fa-solid fa-chart-line"></i> MBRS</h3>
+        </div>
+
+        <div class="card-body">
+
+            <div class="submenu">
+
+                <h4>KPI</h4>
+
+                <ul>
+                    <li>Daftar KPI</li>
+                    <li>Progress KPI</li>
+                </ul>
+
+            </div>
+
+            <div class="submenu">
+
+                <h4>Improvement</h4>
+
+                <ul>
+                    <li>Management Inovasi</li>
+                    <li>Management Visit</li>
+                    <li>6S</li>
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="info-panel">
+
+    <div class="info-box">
+        <i class="fa-solid fa-sitemap"></i>
+        <h3>Organisasi</h3>
+        <p>Informasi struktur dan unit organisasi.</p>
+    </div>
+
+    <div class="info-box">
+        <i class="fa-solid fa-id-card"></i>
+        <h3>Kepegawaian</h3>
+        <p>Data pegawai dan pengembangan SDM.</p>
+    </div>
+
+    <div class="info-box">
+        <i class="fa-solid fa-chart-column"></i>
+        <h3>Kinerja</h3>
+        <p>Pemantauan KPI dan pencapaian target.</p>
+    </div>
+
+    <div class="info-box">
+        <i class="fa-solid fa-lightbulb"></i>
+        <h3>Improvement</h3>
+        <p>Inovasi, Visit Management dan Program 6S.</p>
+    </div>
+
+</section>
+
+<footer>
+    © 2026 Koperasi Konsumen Karyawan Tjiwi Kimia
+</footer>
+
+</body>
+</html>
