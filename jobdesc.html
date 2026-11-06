@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Biodata Karyawan KKTK</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+
+#pdfHeader{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:20px;
+    padding-bottom:10px;
+    border-bottom:2px solid #1565c0;
+}
+
+#logoPdf{
+    width:70px;
+    height:70px;
+    object-fit:contain;
+}
+
+.header-text{
+    flex:1;
+}
+
+.judul-pdf{
+    font-size:20px;
+    font-weight:bold;
+    color:#1565c0;
+}
+
+.subjudul-pdf{
+    font-size:16px;
+    font-weight:bold;
+    margin-top:5px;
+}
+
+#fotoArea{
+    width:160px;
+    min-width:160px;
+    background:white;
+}
+
+.foto{
+    width:160px;
+    height:200px;
+    display:block;
+    object-fit:cover;
+    border:1px solid #999;
+    background:white;
+}
+
+body{
+    margin:0;
+    padding:20px;
+    font-family:Arial;
+    background:#f2f4f7;
+}
+
+.card{
+
+    max-width:850px;
+    margin:auto;
+    background:white;
+    border-radius:10px;
+    padding:25px;
+    box-shadow:
+    0 2px 10px rgba(0,0,0,0.15);
+}
+
+.header-box{
+    display:flex;
+    align-items:flex-start;
+    gap:20px;
+}
+
+
+.info{
+    flex:1;
+    padding-top:5px;
+}
+
+.info div{
+    margin-bottom:10px;
+    font-size:16px;
+    line-height:1.4;
+}
+
+.bold{
+    font-weight:bold;
+    font-size:18px;
+}
+
+.highlight{
+    margin-top:25px;
+    background:#d6ecff;
+    color:#1565c0;
+    padding:12px;
+    border-radius:6px;
+    font-weight:bold;
+    font-size:18px;
+    text-align:center;
+}
+
+.kewenangan{
+    margin-top:15px;
+    padding:10px;
+    line-height:1.6;
+    font-size:16px;
+}
+
+.penugasan{
+    margin-top:15px;
+    padding:10px;
+    line-height:1.6;
+    font-size:16px;
+}
+
+.penugasan div {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    text-align: justify;
+    padding-left: 19px;
+    text-indent: -19px;
+}
+
+.pekerjaan{
+    margin-top:15px;
+    padding:10px;
+    line-height:1.6;
+    font-size:16px;
+}
+
+.pekerjaan div {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    text-align: justify;
+    padding-left: 19px;
+    text-indent: -19px;
+}
+
+.btn-area{
+    margin-top:30px;
+    text-align:center;
+}
+
+button{
+    background:#1565c0;
+    color:white;
+    border:none;
+    padding:12px 30px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#0d47a1;
+}
+
+.pdf-header{
+    display:none;
+}
+
+.loading-overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(255,255,255,0.9);
+    z-index:9999;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+.spinner{
+    width:60px;
+    height:60px;
+    border:6px solid #ddd;
+    border-top:6px solid #1565c0;
+    border-radius:50%;
+
+    animation:spin 1s linear infinite;
+}
+
+.loading-text{
+    margin-top:15px;
+    font-size:16px;
+    font-weight:bold;
+    color:#1565c0;
+}
+
+@keyframes spin{
+    0%{
+        transform:rotate(0deg);
+    }
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
+.loading-overlay{
+    display:flex;
+}
+
+</style>
+
+</head>
+
+<body>
+
+    <div id="loadingSpinner" class="loading-overlay">
+    <div class="spinner"></div>
+    <div class="loading-text">
+        Loading Uraian Pekerjaan (Job Description) Karyawan...
+    </div>
+</div>
+
+<div class="card"
+     id="jobdescCard">
+
+    <div id="pdfArea">
+
+        <!-- HEADER PDF -->
+        <div class="pdf-header"
+             id="pdfHeader">
+            <table width="100%">
+            <tr>
+            <td width="80">
+                <img src="logo.png"
+                     width="70">
+            </td>
+            <td>
+                <div style="
+                    font-size:27px;
+                    font-weight:bold;
+                    color:#1565c0;
+                ">
+                    URAIAN PEKERJAAN (JOB DESCRIPTION) 
+                </div>
+                <div style="
+                    font-size:24px;
+                    font-weight:bold;
+                    color:#1565c0;
+                ">
+                    KOPERASI KONSUMEN KARYAWAN TJIWI KIMIA
+                </div>
+                <div style="
+                    margin-top:5px;
+                    font-size:18px;
+                    color:#444;
+                "
+                id="judulUnit">
+                </div>
+            </td>
+            </tr>
+            </table>
+            <hr>
+        </div>
+        <!-- ISI -->
+        <div class="header-box">
+            <div id="fotoArea">
+                <img id="foto"
+                     class="foto">
+            </div>
+            <div class="info">
+                <div class="bold"
+                     id="noreg">
+                </div>
+                <div class="bold"
+                     id="nama">
+                </div>
+                <div class="bold"
+                     id="jabatan">
+                </div>
+                <div id="pangkat"></div>
+                <div id="bagian"></div>
+                <div id="atasan"></div>
+                <div id="bawahan"></div>
+            </div>
+        </div>
+
+        <!-- PROFIL TAMBAHAN -->
+
+        <div class="highlight">
+            KEWENANGAN
+        </div>
+        <div class="kewenangan">
+                <div id="keuangan"></div>
+                <div id="perencanaan"></div>
+                <div id="koordinasi"></div>
+                <div id="perintah"></div>
+                <div id="pengawasan"></div>
+                <div id="evaluasi"></div>
+        </div>
+
+        <!-- PROFIL TAMBAHAN -->
+
+        <div class="highlight">
+            FUNGSI PENUGASAN
+        </div>
+        <div class="penugasan">
+                <div id="aturan"></div>
+        </div>
+
+        <!-- PROFIL TAMBAHAN -->
+
+        <div class="highlight">
+            URAIAN PEKERJAAN DAN BEBAN KERJA
+        </div>
+        <div class="pekerjaan">
+                <div id="tanggungjawab"></div>
+        </div>
+    </div>
+
+    <!-- BUTTON -->
+
+    <div class="btn-area">
+        <button id="btnPdf"
+            onclick="tampilkanPDF()"
+            title="Lihat Lampiran PDF">
+            PDF
+        </button>
+    </div>
+</div>
+
+<script>
+
+const API_URL = "https://script.google.com/macros/s/AKfycbxytyuYP8ePwHFBnZZHQiyx85EOCMXnjptM_vnoYPXTRXgwEfn9_Q9EMlTDHN-oPlZCMw/exec";
+const API_FOTO = "https://script.google.com/macros/s/AKfycbxXcRqaypV8sUXju3zebBwWKSQ_-qHQAFcykOesQFOdIqsAkfK3TPClgzd5cm-ibPaW/exec";
+
+
+async function tampilkanFoto(noreg) {
+
+    const foto = document.getElementById("foto");
+    if (!foto) {
+        console.error("Elemen foto tidak ditemukan");
+        return;
+    }
+    foto.style.display = "none";
+    try {
+        const response = await fetch(API_FOTO);
+        if (!response.ok) {
+            throw new Error("API Foto tidak dapat diakses");
+        }
+        const dataFoto = await response.json();
+        console.log("Data API Foto:", dataFoto);
+        const karyawan = dataFoto.find(a =>
+            String(a.noreg).trim() === String(noreg).trim()
+        );
+        if (!karyawan) {
+            console.log("Data foto tidak ditemukan:", noreg);
+            return;
+        }
+        const fileId = karyawan.fotoId;
+        if (fileId) {
+            foto.onload = function() {
+                foto.style.display = "block";
+                console.log("Foto berhasil ditampilkan");
+            };
+            foto.onerror = function() {
+                foto.style.display = "none";
+                console.error("Foto gagal ditampilkan");
+            };
+            foto.src = "https://drive.google.com/thumbnail?id=" + encodeURIComponent(fileId) + "&sz=w600";
+        } else {
+            console.log("Foto ID kosong:", noreg);
+        }
+    } catch (err) {
+        console.error("Gagal mengambil foto:", err);
+        foto.style.display = "none";
+    }
+}
+
+// ======================================
+// MENAMPILKAN LAMPIRAN PDF
+// ======================================
+
+function tampilkanPDF() {
+    if (!currentData || !currentData.fileId) {
+        alert("Lampiran PDF tidak tersedia");
+        return;
+    }
+    const fileId = currentData.fileId;
+    const previewLink = "https://drive.google.com/file/d/" + encodeURIComponent(fileId) + "/preview";
+    document.getElementById("pdfFrame").src = previewLink;
+    document.getElementById("pdfModal").style.display = "block";
+}
+
+// ======================================
+// MENUTUP PDF
+// ======================================
+
+function tutupPDF() {
+    document.getElementById("pdfModal").style.display = "none";
+    document.getElementById("pdfFrame").src = "";
+}
+
+
+function isiUraian(id, label, teks) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = "";
+    if (!teks || teks.trim() === "") {
+        el.textContent = "-";
+        return;
+    }
+
+    // Pisahkan berdasarkan tanda titik atau minus
+    const daftar = String(teks)
+        .split(/\s*-\s*/)
+        .map(baris => baris.trim())
+        .filter(baris => baris !== "");
+    daftar.forEach((baris, index) => {
+        const div = document.createElement("div");
+        div.textContent = (index + 1) + ". " + baris;
+        el.appendChild(div);
+    });
+}
+
+let currentData = null;
+
+async function loadData() {
+
+    const loading = document.getElementById("loadingSpinner");
+    loading.style.display = "flex";
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const noreg = params.get("noreg");
+        if (!noreg) {
+            throw new Error("Nomor Register tidak ditemukan");
+        }
+
+        // AMBIL DATA JOB DESCRIPTION
+        const response = await fetch(API_URL);
+        if (!response.ok) {
+            throw new Error("API Jobdesc tidak dapat diakses");
+        }
+        const data = await response.json();
+        console.log("Data API Jobdesc:", data);
+        const x = data.find(a =>
+            String(a.noreg).trim() === String(noreg).trim()
+        );
+        if (!x) {
+            throw new Error("Data karyawan tidak ditemukan: " + noreg);
+        }
+
+        currentData = x;
+
+        // TAMPILKAN DATA KARYAWAN
+        document.getElementById("noreg").textContent = "No Register : " + (x.noreg || "");
+        document.getElementById("nama").textContent = "Nama : " + (x.nama || "");
+        document.getElementById("jabatan").textContent = "Jabatan : " + (x.jabatan || "");
+        document.getElementById("pangkat").textContent = "Level : " + (x.pangkat || "");
+        document.getElementById("bagian").textContent = "Bagian : " + (x.bagian || "");
+        document.getElementById("atasan").textContent = "Atasan : " + (x.atasan || "");
+        document.getElementById("bawahan").textContent = "Bawahan : " + (x.bawahan || "");
+        document.getElementById("keuangan").textContent = x.otoisi1 || "";
+        document.getElementById("perencanaan").textContent = x.otoisi2 || "";
+        document.getElementById("koordinasi").textContent = x.otoisi3 || "";
+        document.getElementById("perintah").textContent = x.otoisi4 || "";
+        document.getElementById("pengawasan").textContent = x.otoisi5 || "";
+        document.getElementById("evaluasi").textContent = x.otoisi6 || "";
+        isiUraian("aturan", "Aturan", x.peran);
+        isiUraian("tanggungjawab", "Tanggung Jawab", x.tgjawab);
+
+        // AMBIL FOTO KARYAWAN
+        await tampilkanFoto(x.noreg);
+        console.log("Data karyawan berhasil dimuat");
+    } catch (err) {
+        console.error("Kesalahan loadData:", err);
+        alert("Gagal mengambil data: " + err.message);
+    } finally {
+        // SEMBUNYIKAN SPINNER
+        loading.style.display = "none";
+    }
+}
+
+async function convertImageToBase64(url){
+
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return await new Promise(resolve=>{
+        const reader = new FileReader();
+        reader.onloadend = ()=> resolve(reader.result);
+        reader.readAsDataURL(blob);
+    });
+}
+
+
+loadData();
+
+</script>
+
+<!-- MODAL PDF A4 PORTRAIT -->
+<div id="pdfModal" style="
+    display:none;
+    position:fixed;
+    z-index:10000;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.85);
+    overflow:auto;
+">
+    <div style="
+        width:90%;
+        max-width:850px;
+        height:95%;
+        margin:2.5% auto;
+        position:relative;
+        display:flex;
+        justify-content:center;
+    ">
+        <!-- TOMBOL TUTUP X -->
+        <button onclick="tutupPDF()" style="
+            position:absolute;
+            top:0;
+            right:0;
+            z-index:2;
+            width:38px;
+            height:38px;
+            padding:0;
+            background:white;
+            color:#333;
+            border:1px solid #999;
+            border-radius:4px;
+            font-size:24px;
+            font-weight:bold;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        ">×</button>
+        <!-- PDF VIEWER -->
+        <iframe id="pdfFrame" style="
+            width:100%;
+            height:100%;
+            max-width:650px;
+            border:none;
+            background:white;
+            border-radius:4px;
+        "></iframe>
+    </div>
+</div>
+
+</body>
+</html>

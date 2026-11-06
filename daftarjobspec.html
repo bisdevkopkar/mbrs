@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<title>Spesifikasi Pekerjaan Karyawan Koperasi Konsumen Karyawan Tjiwi Kimia - Ver.1.0</title>
+
+<style>
+
+.summary-box{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    align-items:center;
+    font-weight:bold;
+    color:#1565c0;
+}
+
+.button-group{
+    display:flex;
+    gap:10px;
+}    
+
+ .download-btn{
+    position:absolute;
+    top:10px;
+    right:60px;
+    z-index:1000;
+    background:#1565c0;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:bold;
+}   
+
+.icon-group{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:nowrap;
+    white-space:nowrap;
+}
+
+.icon-group span{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.icon-biodata{
+    background:#e7f1ff;
+    color:#0d6efd;
+}
+
+.icon-foto{
+    background:#e8f5e9;
+    color:#198754;
+}
+
+.icon-ktp{
+    background:#fdeaea;
+    color:#dc3545;
+}
+
+.icon-kk{
+    background:#f3e8ff;
+    color:#6f42c1;
+}
+
+.icon-npwp{
+    background:#fff0dd;
+    color:#fd7e14;
+}
+
+.modal-gambar{
+    display:none;
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.75);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.modal-content-gambar{
+    position:relative;
+    width:85%;
+    height:85%;
+    background:#fff;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.img-container{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    cursor:grab;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.img-container:active{
+    cursor:grabbing;
+}
+
+#imgPreview{
+    max-width:95%;
+    max-height:95%;
+    user-select:none;
+    transform-origin:center center;
+    transition:transform .1s;
+}
+
+.toolbar-gambar{
+    position:absolute;
+    top:10px;
+    left:10px;
+    z-index:10000;
+}
+
+.toolbar button{
+    min-width:60px;
+    height:40px;
+    border:none;
+    border-radius:6px;
+    background:white;
+    color:black;
+    font-size:16px;
+    cursor:pointer;
+    margin-right:5px;
+    font-weight:bold;
+    text-align:center;
+    padding:0 10px;
+}
+
+.close-btn{
+    position:absolute;
+    top:5px;
+    right:15px;
+    font-size:32px;
+    cursor:pointer;
+    z-index:10000;
+}
+
+.toolbar button:hover,
+.toolbar button:focus,
+.toolbar button:active{
+    background:#0d6efd;
+    color:white;
+    outline:none;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    z-index:999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+}
+
+.modal-content{
+    position:relative;
+    width:90%;
+    height:90%;
+    margin:2% auto;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.close{
+    position:absolute;
+    right:15px;
+    top:10px;
+    font-size:30px;
+    cursor:pointer;
+    z-index:1000;
+    color:red;
+    font-weight:bold;
+}
+
+#pdfFrame{
+    width:100%;
+    height:100%;
+    border:none;
+}    
+
+.table-container{
+    padding:15px;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#1565c0;
+    color:white;
+    padding:12px;
+    text-align:left;
+}
+
+td{
+    padding:8px 10px;
+}
+
+tbody tr{
+    transition:0.2s;
+}
+
+/* baris ganjil */
+tbody tr:nth-child(odd){
+    background:white;
+}
+
+/* baris genap */
+tbody tr:nth-child(even){
+    background:#eaf3ff;
+}
+
+/* hover */
+tbody tr:hover{
+    background:#d6e9ff;
+}
+
+th{
+    background:#1565c0;
+    color:white;
+    padding:10px;
+    text-align:left;
+    white-space:nowrap;
+}
+
+.lampiran-cell{
+    white-space:nowrap;
+}
+
+.pdf-icon{
+    cursor:pointer;
+    margin-right:8px;
+    font-size:18px;
+}
+
+.pdf-icon i{
+    pointer-events:none;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f0f2f5;
+}
+
+.header{
+    background:#1565c0;
+    color:white;
+    padding:15px;
+    font-size:24px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.toolbar{
+    background:white;
+    padding:10px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 2px 5px rgba(0,0,0,0.15);
+}
+
+button{
+    background:#1976d2;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#0d47a1;
+}
+
+.container{
+    padding:15px;
+}
+
+iframe{
+    width:100%;
+    height:500px;
+    border:none;
+    margin-top:10px;
+    border-radius:8px;
+}
+
+.loading{
+    text-align:center;
+    padding:20px;
+    font-size:18px;
+}
+
+.center{
+    text-align:center;
+}
+
+.dashboard-content{
+    position:relative;
+    width:92vw;
+    height:86vh;
+    margin:1vh auto;
+    background:white;
+    border-radius:10px;
+    padding:15px;
+    overflow:auto;
+}
+
+#barChart{
+    height:78% !important;
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:60% 40%;
+    gap:8px;
+    width:100%;
+    height:calc(100% - 40px);
+}
+
+.chart-box{
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+.chart-box canvas{
+    max-height:100% !important;
+}
+
+.pie-container{
+    display:grid;
+    grid-template-rows:40% auto 40%;
+    gap:5px;
+    height:100%;
+    align-items:center;
+}
+
+#pieOmzet,
+#pieEbitda{
+    max-height:300px !important;
+}
+
+.legend-box{
+    text-align:center;
+    font-size:11px;
+    font-weight:bold;
+    color:#444;
+}
+
+canvas{
+    width:100% !important;
+    height:100% !important;
+}
+
+.download-dashboard-btn{
+    position:absolute;
+    top:10px;
+    right:70px;
+    z-index:1000;
+    background:#2e7d32;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.unit-dashboard-content{
+    position:relative;
+    width:92vw;
+    height:84vh;
+    margin:2vh auto;
+    background:white;
+    border-radius:10px;
+    padding:15px;
+    overflow:hidden;
+}
+
+.unit-dashboard-grid{
+    display:grid;
+    grid-template-columns:55% 45%;
+    gap:10px;
+    width:100%;
+    height:100%;
+}
+
+.icon-slot{
+    display:inline-block;
+    width:28px;
+    text-align:center;
+}
+
+#txtCari{
+    padding:8px;
+    border:1px solid #ccc;
+    border-radius:5px;
+    width:250px;
+}
+
+.search-box{
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.search-btn{
+    padding:8px 12px;
+    cursor:pointer;
+}
+
+.loading{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:white;
+    z-index:9999;
+}
+
+.spinner{
+    width:60px;
+    height:60px;
+    border:6px solid #ddd;
+    border-top:6px solid #1565c0;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+.loading-text{
+    margin-top:15px;
+    font-size:18px;
+    font-weight:bold;
+    color:#1565c0;
+    text-align:center;
+}
+
+.tgl-keluar{
+    background:#ffe4e1;
+    color:#7a1f1f;
+    font-weight:600;
+    text-align:center;
+}
+
+.th-keluar{
+    background:#ffb6c1 !important;
+    color:#7a1f1f !important;
+}
+
+
+@keyframes spin{
+    0%{
+        transform:rotate(0deg);
+    }
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script>
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+</head>
+
+<body>
+
+<div class="header">
+    SPESIFIKASI PEKERJAAN (JOB SPECIFICATION) KARYAWAN KOPERASI KONSUMEN KARYAWAN TJIWI KIMIA
+</div>
+
+<div class="toolbar">
+        <div class="periode-box">
+            <label>UNIT :</label>
+            <select id="cmbUnit"
+                onchange="filterUnit()">
+            </select>
+        </div>
+        <div class="search-box">
+            <input type="text"
+                id="txtCari"
+                placeholder="Cari Noreg / Nama Karyawan">
+
+            <button onclick="cariSemua()" class="search-btn">
+                🔍
+            </button>
+        </div>
+</div>
+
+<div id="loading" class="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">
+        Loading Data Karyawan...
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+        <tr>
+            <th>No Register</th>
+            <th>Nama</th>
+            <th>Jabatan</th>
+            <th>Pangkat</th>
+            <th>Bagian / Bisnis Unit</th>
+            <th>Atasan Lngsung</th>
+            <th>Bawahan</th>
+            <th class="center">Dokumen</th>
+        </tr>
+        </thead>
+        <tbody id="listData"></tbody>
+    </table>    
+</div>
+
+<script>
+
+
+const API_URL = "https://script.google.com/macros/s/AKfycbwCYLnYCWPQPBe9ff-nim66gsBo6Zpy5bYRcanxiNC4FfO1Vr0bib1T19czyH8n_37Z1A/exec";
+
+let allData = [];
+let filteredData = [];
+
+// ==================================================
+// LOAD DATA DARI GOOGLE SHEETS
+// ==================================================
+
+async function loadData() {
+
+    const loading = document.getElementById("loading");
+    const list = document.getElementById("listData");
+
+    loading.style.display = "flex";
+    loading.innerHTML = `
+        <div class="spinner"></div>
+        <div class="loading-text">Loading Data Karyawan...</div>
+    `;
+
+    try {
+        const response = await fetch(API_URL);
+        if (!response.ok) {
+            throw new Error("HTTP Error: " + response.status);
+        }
+        const result = await response.json();
+
+        // Mendukung format array langsung atau {data: [...]}
+        allData = Array.isArray(result)
+            ? result
+            : (Array.isArray(result.data) ? result.data : []);
+
+        if (allData.length === 0) {
+            throw new Error("Data Google Sheets kosong atau format JSON tidak sesuai.");
+        }
+
+        // Isi dropdown unit
+        isiComboUnit();
+
+        // Tampilkan seluruh data
+        filterUnit();
+
+        loading.style.display = "none";
+
+    }
+    catch (err) {
+
+        console.error("Kesalahan loadData:", err);
+        loading.innerHTML = `
+            <div style="color:red;font-weight:bold">
+                Gagal mengambil data karyawan.
+                <br><br>
+                ${err.message}
+                <br><br>
+                Periksa Apps Script dan koneksi internet.
+            </div>
+        `;
+    }
+}
+
+
+// ==================================================
+// ISI COMBOBOX BAGIAN / UNIT
+// ==================================================
+
+function isiComboUnit() {
+
+    const cmb = document.getElementById("cmbUnit");
+    cmb.innerHTML = '<option value="SEMUA">Semua Unit</option>';
+    const unit = [
+        ...new Set(
+            allData.map(x => (x.bagian || "").trim())
+                .filter(x => x !== "")
+        )
+    ];
+    unit.sort();
+    unit.forEach(p => {
+        const option = document.createElement("option");
+        option.value = p;
+        option.textContent = p;
+        cmb.appendChild(option);
+    });
+    cmb.value = "SEMUA";
+}
+
+
+// ==================================================
+// FILTER UNIT DAN PENCARIAN
+// ==================================================
+
+function filterUnit() {
+
+    const unit = document.getElementById("cmbUnit").value;
+    const cari = document.getElementById("txtCari")
+        .value.trim().toUpperCase();
+    filteredData = allData.filter(x => {
+        const sesuaiUnit =
+            unit === "SEMUA" || x.bagian === unit;
+        const sesuaiCari =
+            cari === "" ||
+            String(x.noreg || "").toUpperCase().includes(cari) ||
+            String(x.nama || "").toUpperCase().includes(cari) ||
+            String(x.jabatan || "").toUpperCase().includes(cari);
+        return sesuaiUnit && sesuaiCari;
+    });
+    tampilData(filteredData);
+}
+
+
+// ==================================================
+// PENCARIAN KARYAWAN
+// ==================================================
+
+function cariSemua() {
+    filterUnit();
+}
+
+
+// ==================================================
+// MENAMPILKAN DATA KE TABEL
+// ==================================================
+
+function tampilData(data) {
+
+    const list = document.getElementById("listData");
+    list.innerHTML = "";
+    if (data.length === 0) {
+        list.innerHTML = `
+            <tr>
+                <td colspan="6" class="center">
+                    Data karyawan tidak ditemukan
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    data.forEach(x => {
+        const tr = document.createElement("tr");
+
+        // Kolom Noreg
+        const tdNoreg = document.createElement("td");
+        tdNoreg.textContent = x.noreg || "";
+        tr.appendChild(tdNoreg);
+
+        // Kolom Nama
+        const tdNama = document.createElement("td");
+        tdNama.textContent = x.nama || "";
+        tr.appendChild(tdNama);
+
+        // Kolom Jabatan
+        const tdJabatan = document.createElement("td");
+        tdJabatan.textContent = x.jabatan || "";
+        tr.appendChild(tdJabatan);
+
+        // Kolom Pangkat
+        const tdPangkat = document.createElement("td");
+        tdPangkat.textContent = x.pangkat || "";
+        tr.appendChild(tdPangkat);
+
+        // Kolom Bagian
+        const tdBagian = document.createElement("td");
+        tdBagian.textContent = x.bagian || "";
+        tr.appendChild(tdBagian);
+
+        // Kolom Atasan
+        const tdAtasan = document.createElement("td");
+        tdAtasan.textContent = x.atasan || "";
+        tr.appendChild(tdAtasan);
+
+        // Kolom Bawahan
+        const tdBawahan = document.createElement("td");
+        tdBawahan.textContent = x.bawahan || "";
+        tr.appendChild(tdBawahan);
+
+        // Kolom Icon Job Description
+        const tdIcon = document.createElement("td");
+        tdIcon.className = "center";
+
+        const icon = document.createElement("span");
+        icon.className = "icon-biodata";
+        icon.title = "Lihat Uraian Jabatan";
+        icon.innerHTML = '<i class="fa-solid fa-file-lines"></i>';
+        icon.style.display = "inline-flex";
+        icon.style.width = "32px";
+        icon.style.height = "32px";
+        icon.style.borderRadius = "50%";
+        icon.style.alignItems = "center";
+        icon.style.justifyContent = "center";
+        icon.style.cursor = "pointer";
+        icon.addEventListener("click", function() {
+            openJobdesc(x.noreg);
+        });
+        tdIcon.appendChild(icon);
+        tr.appendChild(tdIcon);
+        list.appendChild(tr);
+    });
+}
+
+// ==================================================
+// BUKA HALAMAN JOB DESCRIPTION
+// ==================================================
+
+function openJobdesc(noreg) {
+    window.open(
+        "jobspec.html?noreg=" + encodeURIComponent(noreg),
+        "_blank"
+    );
+
+}
+
+// ==================================================
+// PENCARIAN DENGAN ENTER
+// ==================================================
+
+document.getElementById("txtCari")
+    .addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            cariSemua();
+        }
+    });
+
+// ==================================================
+// JALANKAN PROGRAM
+// ==================================================
+
+loadData();
+
+
+</script>
+
+
+<div id="pdfModal" class="modal">
+    <div class="modal-content">
+        <span class="close"
+              onclick="closePDF()">
+              &times;
+        </span>
+        <button id="downloadBtn"
+                class="download-btn">
+            Download PDF
+        </button>
+        <iframe id="pdfFrame"></iframe>
+    </div>
+</div>
+
+
+<div id="modalGambar" class="modal-gambar">
+    <div class="modal-content-gambar">
+        <span class="close-btn" onclick="tutupGambar()">&times;</span>
+        <div class="toolbar-gambar">
+            <button onclick="zoomOut()">−</button>
+            <button onclick="resetZoom()">100%</button>
+            <button onclick="zoomIn()">+</button>
+        </div>
+        <div id="imgContainer" class="img-container">
+            <img id="imgPreview">
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
