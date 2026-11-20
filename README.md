@@ -1,0 +1,1 @@
+Management information system for the HRIS application at the Tjiwi Kimia employee consumer cooperative to help all related parties, especially the HRGA team, in monitoring and evaluating the performance of all cooperative units to achieve the predetermined EBITDA targets
