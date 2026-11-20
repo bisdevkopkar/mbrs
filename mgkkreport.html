@@ -76,11 +76,6 @@ canvas{
     text-align:right;
 }
 
-.pdf-icon{
-    font-size:22px;
-    cursor:pointer;
-}
-
 .button-group{
     display:flex;
     gap:10px;
@@ -243,9 +238,11 @@ canvas{
     border:none;
 }    
 
-.table-container{
-    padding:15px;
-    overflow-x:auto;
+.table-container {
+    padding: 0 15px 15px;
+    height: calc(100vh - var(--tinggi-tetap));
+    overflow-y: auto;
+    overflow-x: auto;
 }
 
 table{
@@ -256,12 +253,19 @@ table{
 th{
     background:#1565c0;
     color:white;
-    padding:12px;
+    padding:8px;
     text-align:left;
+    white-space:nowrap;
+    font-size:14px;
+
+    position:sticky;
+    z-index:998;
 }
 
 td{
-    padding:8px 10px;
+    padding: 2px 6px;
+    font-size: 12px;
+    vertical-align: middle;
 }
 
 tbody tr{
@@ -283,21 +287,13 @@ tbody tr:hover{
     background:#d6e9ff;
 }
 
-th{
-    background:#1565c0;
-    color:white;
-    padding:10px;
-    text-align:left;
-    white-space:nowrap;
-}
-
 .lampiran-cell{
     white-space:nowrap;
 }
 
 .pdf-icon{
     cursor:pointer;
-    font-size:22px;
+    font-size:18px;
 }
 
 *{
@@ -428,6 +424,59 @@ iframe{
     gap:10px;
 }
 
+.toolbar select{
+    padding:9px 12px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+    background:white;
+    color:#1565c0;
+    min-width:110px;
+}
+
+.toolbar label{
+    font-weight:bold;
+    color:#1565c0;
+}
+
+/* =====================================
+   HEADER DAN JUDUL KOLOM TETAP
+===================================== */
+
+:root {
+    --tinggi-header: 58px;
+    --tinggi-toolbar: 58px;
+}
+/* Header utama */
+.header {
+    position: sticky !important;
+    top: 0;
+    z-index: 1002;
+}
+/* Toolbar filter */
+.toolbar {
+    position: sticky !important;
+    top: var(--tinggi-header);
+    z-index: 1001;
+}
+/* Area tabel */
+.table-container {
+    overflow: visible !important;
+}
+/* Tabel */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+/* Judul kolom */
+thead th {
+    position: sticky !important;
+    top: calc(var(--tinggi-header) + var(--tinggi-toolbar));
+    z-index: 1000;
+    background: #1565c0;
+}
 
 </style>
 
@@ -447,7 +496,7 @@ iframe{
     <div id="loading" class="loading">
         <div class="spinner"></div>
             <div class="loading-text">
-            Loading Data Manajemen Gugus Kendali Kinerja...
+            Loading Data Laporan Manajemen Gugus Kendali Kinerja...
         </div>
     </div>
     <div class="header">
@@ -457,24 +506,36 @@ iframe{
         <button onclick="openDashboard()">
             DASHBOARD
         </button>
+        <label for="filterJenis">Jenis Laporan:</label>
+        <select id="filterJenis" onchange="applyFilters()">
+            <option value="SEMUA" selected>Semua</option>
+            <option value="SSI">Sumbang Saran (I-Suggest)</option>
+            <option value="TPL">Perbaikan Langsung (JDI)</option>
+            <option value="GKM">Gugus Kendali Mutu (SGA)</option>
+            <option value="GKP">Gugus Kendali Proses (SDA)</option>
+        </select>
+
+        <label for="filterTahun">Tahun:</label>
+        <select id="filterTahun" onchange="applyFilters()">
+        </select>
     </div>
-<div class="table-container">
-    <table>
-    <thead>
-    <tr>
-        <th class="center"> No Register </th>
-        <th class="center"> Tanggal Daftar </th>
-        <th class="center"> Pembuat </th>
-        <th class="center"> Unit </th>
-        <th class="center"> Tujuan </th>
-        <th class="center"> Pimpinan </th>
-        <th class="center"> Tanggal Selesai </th>
-        <th> Laporan </th>
-    </tr>
-    </thead>
-    <tbody id="listData"></tbody>
-    </table>
-</div>
+    <div class="table-container">
+        <table>
+        <thead>
+        <tr>
+            <th class="center"> No Register </th>
+            <th class="center"> Tanggal Daftar </th>
+            <th class="center"> Pembuat </th>
+            <th class="center"> Unit </th>
+            <th class="center"> Tujuan </th>
+            <th class="center"> Pimpinan </th>
+            <th class="center"> Tanggal Selesai </th>
+            <th> Laporan </th>
+        </tr>
+        </thead>
+        <tbody id="listData"></tbody>
+        </table>
+    </div>
 
 <script>
 
@@ -483,6 +544,18 @@ const API_URL =
 let allData = [];
 let filteredData = [];
 
+function aturPosisiSticky() {
+    const header = document.querySelector(".header");
+    const toolbar = document.querySelector(".toolbar");
+    const tinggiHeader = header.offsetHeight;
+    toolbar.style.top = tinggiHeader + "px";
+    document.querySelectorAll("thead th").forEach(th => {
+        th.style.top =
+            (tinggiHeader + toolbar.offsetHeight) + "px";
+    });
+}
+window.addEventListener("load", aturPosisiSticky);
+window.addEventListener("resize", aturPosisiSticky);
 
 
 function openForm(url){
@@ -496,19 +569,76 @@ async function loadData(){
         const response = await fetch(API_URL);
         allData = await response.json();
         console.log("Jumlah Data :", allData.length);
-        console.log("Data Pertama :", allData[0]);
+        // Isi pilihan tahun berdasarkan database
+        isiFilterTahun();
+        // Terapkan filter awal
+        applyFilters();
         document.getElementById("loading")
             .style.display = "none";
-        tampilData();
-        buatGrafik();
     }
     catch(err){
         document.getElementById("loading")
-            .innerHTML =
-            "Gagal load data";
+            .innerHTML = "Gagal load data";
         console.log(err);
     }
 }
+
+function isiFilterTahun(){
+    const select = document.getElementById("filterTahun");
+    select.innerHTML = "";
+    // Ambil tahun dari field tanggal
+    const tahunList = [
+        ...new Set(
+            allData.map(x =>
+                String(x.tanggal || "")
+                    .trim()
+                    .substring(0,4)
+            ).filter(t =>
+                /^\d{4}$/.test(t)
+            )
+        )
+    ];
+    // Urutkan tahun terbaru
+    tahunList.sort((a,b) =>
+        Number(b) - Number(a)
+    );
+    tahunList.forEach(tahun => {
+        const option = document.createElement("option");
+        option.value = tahun;
+        option.textContent = tahun;
+        select.appendChild(option);
+    });
+    // Default tahun terbaru
+    if(tahunList.length > 0){
+        select.value = tahunList[0];
+    }
+}
+
+function applyFilters(){
+    const jenis = document.getElementById("filterJenis").value;
+    const tahun = document.getElementById("filterTahun").value;
+    filteredData = allData.filter(x => {
+        const register = String(x.register || "").trim();
+        const kodeJenis = register.substring(3,6);
+        const tahunData = String(x.tanggal || "").trim().substring(0,4);
+        // Filter jenis laporan
+        const cocokJenis = 
+            jenis === "SEMUA" ||
+            kodeJenis === jenis;
+        // Filter tahun
+        const cocokTahun =
+            tahunData === tahun;
+        return cocokJenis && cocokTahun;
+    });
+    console.log(
+        "Jumlah Data Filter :",
+        filteredData.length
+    );
+    tampilData();
+    buatGrafik();
+}
+
+
 
 //let mgkkCharts = [];
 
@@ -563,7 +693,7 @@ function buatGrafik(){
         G:0,
         P:0
     };
-    allData.forEach(item=>{
+    filteredData.forEach(item=>{
         const unit = item.unit || "-";
         const progres = (item.progres || "").toUpperCase();
         if(!unitData[unit]){
@@ -1129,11 +1259,11 @@ function tampilData(){
         document.getElementById("listData");
     list.innerHTML = "";
     // urut tanggal terbaru
-    allData.sort((a,b)=>
+    filteredData.sort((a,b)=>
         parseInt(b.register) -
         parseInt(a.register)
     );
-    allData.forEach(x=>{
+    filteredData.forEach(x=>{
         const tr =
             document.createElement("tr");
         tr.innerHTML = `
@@ -1317,17 +1447,61 @@ loadData();
     </div>
 </div>
 
-<div id="pdfModal" class="modal">
-    <div class="modal-content">
-        <span class="close"
-              onclick="closePDF()">
-              &times;
-        </span>
+<!-- MODAL PDF A4 PORTRAIT -->
+<div id="pdfModal" style="
+    display:none;
+    position:fixed;
+    z-index:10000;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.85);
+    overflow:auto;
+">
+    <div style="
+        width:90%;
+        max-width:850px;
+        height:95%;
+        margin:2.5% auto;
+        position:relative;
+        display:flex;
+        justify-content:center;
+    ">
+        <!-- TOMBOL TUTUP X -->
+        <button onclick="closePDF()" style="
+            position:absolute;
+            top:0;
+            right:0;
+            z-index:2;
+            width:38px;
+            height:38px;
+            padding:0;
+            background:white;
+            color:#333;
+            border:1px solid #999;
+            border-radius:4px;
+            font-size:24px;
+            font-weight:bold;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        ">×</button>
         <button id="downloadBtn"
                 class="download-btn">
             Download PDF
         </button>
-        <iframe id="pdfFrame"></iframe>
+
+        <!-- PDF VIEWER -->
+        <iframe id="pdfFrame" style="
+            width:100%;
+            height:100%;
+            max-width:650px;
+            border:none;
+            background:white;
+            border-radius:4px;
+        "></iframe>
     </div>
 </div>
 

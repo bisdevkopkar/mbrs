@@ -204,9 +204,11 @@
     border:none;
 }    
 
-.table-container{
-    padding:15px;
-    overflow-x:auto;
+.table-container {
+    padding: 0 15px 15px;
+    height: calc(100vh - var(--tinggi-tetap));
+    overflow-y: auto;
+    overflow-x: auto;
 }
 
 table{
@@ -217,12 +219,19 @@ table{
 th{
     background:#1565c0;
     color:white;
-    padding:12px;
+    padding:8px;
     text-align:left;
+    white-space:nowrap;
+    font-size:14px;
+
+    position:sticky;
+    z-index:998;
 }
 
 td{
-    padding:8px 10px;
+    padding: 2px 6px;
+    font-size: 12px;
+    vertical-align: middle;
 }
 
 tbody tr{
@@ -242,14 +251,6 @@ tbody tr:nth-child(even){
 /* hover */
 tbody tr:hover{
     background:#d6e9ff;
-}
-
-th{
-    background:#1565c0;
-    color:white;
-    padding:10px;
-    text-align:left;
-    white-space:nowrap;
 }
 
 .lampiran-cell{
@@ -279,8 +280,8 @@ body{
 .header{
     background:#1565c0;
     color:white;
-    padding:15px;
-    font-size:24px;
+    padding:10px;
+    font-size:20px;
     font-weight:bold;
     text-align:center;
 }
@@ -501,6 +502,43 @@ canvas{
     }
 }
 
+/* =====================================
+   HEADER DAN JUDUL KOLOM TETAP
+===================================== */
+
+:root {
+    --tinggi-header: 58px;
+    --tinggi-toolbar: 58px;
+}
+/* Header utama */
+.header {
+    position: sticky !important;
+    top: 0;
+    z-index: 1002;
+}
+/* Toolbar filter */
+.toolbar {
+    position: sticky !important;
+    top: var(--tinggi-header);
+    z-index: 1001;
+}
+/* Area tabel */
+.table-container {
+    overflow: visible !important;
+}
+/* Tabel */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+/* Judul kolom */
+thead th {
+    position: sticky !important;
+    top: calc(var(--tinggi-header) + var(--tinggi-toolbar));
+    z-index: 1000;
+    background: #1565c0;
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -569,6 +607,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxytyuYP8ePwHFBnZZHQiyx
 
 let allData = [];
 let filteredData = [];
+
+function aturPosisiSticky() {
+    const header = document.querySelector(".header");
+    const toolbar = document.querySelector(".toolbar");
+    const tinggiHeader = header.offsetHeight;
+    toolbar.style.top = tinggiHeader + "px";
+    document.querySelectorAll("thead th").forEach(th => {
+        th.style.top =
+            (tinggiHeader + toolbar.offsetHeight) + "px";
+    });
+}
+window.addEventListener("load", aturPosisiSticky);
+window.addEventListener("resize", aturPosisiSticky);
+
 
 // ==================================================
 // LOAD DATA DARI GOOGLE SHEETS
